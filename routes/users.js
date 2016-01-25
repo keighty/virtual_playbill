@@ -18,8 +18,6 @@ router.get('/:userId', function(req, res, next) {
       if (err || !rows.length) {
         res.send('couldn\'t find the user!')
       } else {
-        console.log('\n\n rows length: ' + rows.length)
-        console.log('\n\n rows length typeof: ' + typeof rows.length)
         res.send(rows[0]);
       }
   })
