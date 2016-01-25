@@ -1,9 +1,28 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express')
+var mysql = require('mysql')
+var router = express.Router()
+
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'testvp',
+  password: process.env.MYSQL_TESTVP_PASSWORD,
+  database: 'virtual_playbill'
+})
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/:userId', function(req, res, next) {
+  var userId = req.params.userId
+  connection.query(
+    'SELECT * FROM user WHERE ID=' + userId,
+    function (err, rows, fields) {
+      if (err || !rows.length) {
+        res.send('couldn\'t find the user!')
+      } else {
+        console.log('\n\n rows length: ' + rows.length)
+        console.log('\n\n rows length typeof: ' + typeof rows.length)
+        res.send(rows[0]);
+      }
+  })
 });
 
 module.exports = router;
