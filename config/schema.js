@@ -23,7 +23,7 @@ connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err
     connection.query('CREATE TABLE IF NOT EXISTS performance ('
       + 'id INT NOT NULL AUTO_INCREMENT,'
       + 'title VARCHAR(60),'
-      + 'author VARCHAR(60),'
+      + 'playwright VARCHAR(60),'
       + 'director VARCHAR(60),'
       + 'company VARCHAR(60),'
       + 'venue VARCHAR(60),'
