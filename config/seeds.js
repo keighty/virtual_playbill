@@ -1,10 +1,4 @@
-var mysql = require('mysql')
-
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'testvp',
-  password: process.env.MYSQL_TESTVP_PASSWORD
-})
+var connection = require('./schema')
 
 connection.query('USE virtual_playbill', function (err) {
   if (err) throw err;
@@ -31,5 +25,6 @@ connection.query('USE virtual_playbill', function (err) {
     + '"test image"'
     + ')', function (err) {
         if (err) throw err
+        else connection.end()
     });
 })

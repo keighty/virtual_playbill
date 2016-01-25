@@ -6,6 +6,8 @@ var connection = mysql.createConnection({
   password: process.env.MYSQL_TESTVP_PASSWORD
 })
 
+module.exports = connection
+
 connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err) {
   if (err) throw err;
   connection.query('USE virtual_playbill', function (err) {
