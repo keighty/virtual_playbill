@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
 })
 
 /* GET users listing. */
-router.get('/:performanceId', function(req, res, next) {
+router.get('/:performanceId', function (req, res, next) {
   var performanceId = req.params.performanceId
   connection.query(
     'SELECT * FROM performance WHERE ID=' + performanceId,

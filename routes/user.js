@@ -9,7 +9,19 @@ var connection = mysql.createConnection({
   database: 'virtual_playbill'
 })
 
-/* GET users listing. */
+router.get('/:userId/performances', function (req, res, next) {
+  connection.query(
+    'SELECT * FROM user_performance ' +
+    'WHERE user_id=' + req.params.userId,
+    function (err, rows, fields) {
+      if (err || !rows.length) {
+        res.send('couldn\'t find the user or their performances!')
+      } else {
+        res.send(rows);
+      }
+  })
+})
+
 router.get('/:userId', function(req, res, next) {
   var userId = req.params.userId
   connection.query(
