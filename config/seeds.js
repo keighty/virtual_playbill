@@ -11,6 +11,15 @@ connection.query('USE virtual_playbill', function (err) {
     ')', function (err) {
         if (err) throw err
     });
+  connection.query('INSERT into user (' +
+    'f_name, l_name' +
+    ') ' +
+    'VALUES (' +
+    '"Crunchy",' +
+    '"Bacon"' +
+    ')', function (err) {
+        if (err) throw err
+    });
   connection.query('INSERT into performance VALUES (' +
     'null,' +
     '"Baba Yaga",' +
@@ -25,6 +34,36 @@ connection.query('USE virtual_playbill', function (err) {
     '"test image"' +
     ')', function (err) {
         if (err) throw err
-        else connection.end()
     });
+  connection.query('INSERT into performance VALUES (' +
+    'null,' +
+    '"Buried Fire",' +
+    '"test author",' +
+    '"test director",' +
+    '"test company",' +
+    '"Fertile Ground Festival Venue",' +
+    '"test music",' +
+    '"test choreo",' +
+    '"test synopsis -- chicken pot pie",' +
+    '"test category",' +
+    '"test image"' +
+    ')', function (err) {
+        if (err) throw err
+    });
+  connection.query('INSERT into user_performance VALUES (1, 1, 5)',
+    function (err) {
+        if (err) throw err
+    });
+  connection.query('INSERT into user_performance VALUES (1, 2, 5)',
+    function (err) {
+        if (err) throw err
+    });
+  connection.query('INSERT into user_performance VALUES (2, 2, 5)',
+    function (err) {
+        if (err) throw err
+    });
+  connection.query('SHOW tables', function (err) {
+    if (err) throw err
+    else connection.end()
+  })
 })
