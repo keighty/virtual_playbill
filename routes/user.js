@@ -11,8 +11,11 @@ var connection = mysql.createConnection({
 
 router.get('/:userId/performances', function (req, res, next) {
   connection.query(
-    'SELECT * FROM user_performance ' +
-    'WHERE user_id=' + req.params.userId,
+    'SELECT performance.* ' +
+    'FROM user_performance ' +
+    'JOIN performance ' +
+    'ON performance.id = user_performance.performance_id ' +
+    'WHERE user_id = ' + req.params.userId,
     function (err, rows, fields) {
       if (err || !rows.length) {
         res.send('couldn\'t find the user or their performances!')
