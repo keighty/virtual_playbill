@@ -1,12 +1,4 @@
-var mysql = require('mysql')
-
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'testvp',
-  password: process.env.MYSQL_TESTVP_PASSWORD
-})
-
-module.exports = connection
+var connection = require('./connection')
 
 connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err) {
   if (err) throw err;
@@ -62,5 +54,6 @@ connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err
        ')', function (err) {
           if (err) throw err
       });
+    connection.end()
   });
 });

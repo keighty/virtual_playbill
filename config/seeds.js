@@ -1,4 +1,4 @@
-var connection = require('./schema')
+var connection = require('./connection')
 
 connection.query('USE virtual_playbill', function (err) {
   if (err) throw err;
@@ -62,8 +62,5 @@ connection.query('USE virtual_playbill', function (err) {
     function (err) {
         if (err) throw err
     });
-  connection.query('SHOW tables', function (err) {
-    if (err) throw err
-    else connection.end()
-  })
+  connection.end()
 })
