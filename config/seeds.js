@@ -62,5 +62,35 @@ connection.query('USE virtual_playbill', function (err) {
     function (err) {
         if (err) throw err
     });
+  connection.query('INSERT into performer (' +
+    'f_name, l_name' +
+    ') ' +
+    'VALUES (' +
+    '"Sally",' +
+    '"Bowles"' +
+    ')', function (err) {
+        if (err) throw err
+    });
+  connection.query('INSERT into performer (' +
+    'f_name, l_name' +
+    ') ' +
+    'VALUES (' +
+    '"Jeff",' +
+    '"Murdoch"' +
+    ')', function (err) {
+        if (err) throw err
+    });
+  connection.query('INSERT into performer_performance VALUES (1, 1)',
+    function (err) {
+        if (err) throw err
+    });
+  connection.query('INSERT into performer_performance VALUES (1, 2)',
+    function (err) {
+        if (err) throw err
+    });
+  connection.query('INSERT into performer_performance VALUES (2, 2)',
+    function (err) {
+        if (err) throw err
+    });
   connection.end()
 })

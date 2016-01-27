@@ -40,7 +40,8 @@ connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err
       });
     connection.query('CREATE TABLE IF NOT EXISTS performer(' +
       'id INT NOT NULL AUTO_INCREMENT,' +
-      'name VARCHAR(60),' +
+      'f_name VARCHAR(60),' +
+      'l_name VARCHAR(60),' +
       'PRIMARY KEY(id)' +
        ')', function (err) {
           if (err) throw err
