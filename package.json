@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "setup": "node ./config/schema.js; node ./config/seeds.js"
+    "setup": "node ./config/schema.js; node ./config/seeds.js",
+    "test" : "echo 'No tests setup yet.'",
+    "precommit": "eslint .; npm test"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -23,6 +25,7 @@
     "babel-loader": "6.2.1",
     "babel-preset-es2015": "6.3.13",
     "babel-preset-react": "6.3.13",
+    "husky": "0.11.2",
     "webpack": "1.12.12",
     "webpack-dev-server": "1.12.1"
   }
