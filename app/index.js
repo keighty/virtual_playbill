@@ -1,11 +1,12 @@
 var FilterablePerformanceGrid = require('./filterable-performance-grid.jsx')
 
 /*
-FilterablePerformanceGrid
+PerformanceGrid
   SearchBar
-  PerformanceFrame
-    PerformanceTitle
-    PerformanceDate
-    PerformanceImage
+  FilterablePerformances
+    PerformanceFrame
+      PerformanceTitle
+      PerformanceDate
+      PerformanceImage
 */
 

@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 var connection = require('../config/connection')
 
+// GET /user/1/performances
 router.get('/:userId/performances', function (req, res, next) {
   connection.query(
     'SELECT performance.* ' +
