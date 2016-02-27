@@ -1,4 +1,4 @@
-import FilterablePerformanceGrid from './filterable-performance-grid.jsx'
+var FilterablePerformanceGrid = require('./filterable-performance-grid.jsx')
 
 /*
 FilterablePerformanceGrid
