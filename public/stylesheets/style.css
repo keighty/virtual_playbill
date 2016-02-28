@@ -1,3 +1,10 @@
+.yellow { color: #ffea00}
+.black { color: #010100}
+.khaki { color: #857a00}
+.brown { color: #443e00}
+.brownblack { color: #272300}
+.yellow-green { color: #c0b000}
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;

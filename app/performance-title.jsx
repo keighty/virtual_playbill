@@ -8,12 +8,14 @@ class PerformanceTitle extends React.Component {
   }
 
   render() {
-    return (
-      <p>
-        performance title: {this.props.title}
-      </p>
-    )
+    return <h4 style={title}>{this.props.title}</h4>
   }
+}
+
+let title = {
+  padding: '5px',
+  'text-align': 'center',
+  'margin-bottom': '0px'
 }
 
 export default PerformanceTitle
