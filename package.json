@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
+    "build": "webpack --progress --colors --watch",
     "test" : "echo 'No tests setup yet.'",
     "precommit": "eslint .; npm test"
   },
