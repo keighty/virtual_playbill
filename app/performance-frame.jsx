@@ -18,7 +18,6 @@ class PerformanceFrame extends React.Component {
     return (
       <div>
         <PerformanceTitle title={this.state.title} />
-        <PerformanceDate date={this.state.date} />
         <PerformanceImage image={this.state.image} />
       </div>
     )

@@ -32,6 +32,7 @@ connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err
       'user_id INT NOT NULL,' +
       'performance_id INT NOT NULL,' +
       'rating INT,' +
+      'ticket_date DATE,' +
       'FOREIGN KEY (user_id) REFERENCES user(id),' +
       'FOREIGN KEY (performance_id) REFERENCES performance(id),' +
       'PRIMARY KEY (user_id, performance_id)' +
