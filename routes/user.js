@@ -5,7 +5,7 @@ var connection = require('../config/connection')
 // GET /user/1/performances
 router.get('/:userId/performances', function (req, res, next) {
   connection.query(
-    'SELECT performance.* ' +
+    'SELECT performance.*, user_performance.ticket_date ' +
     'FROM user_performance ' +
     'JOIN performance ' +
     'ON performance.id = user_performance.performance_id ' +

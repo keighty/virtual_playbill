@@ -9,6 +9,7 @@ class PerformanceFrame extends React.Component {
     super(props)
     this.state = {
       title: props.performance.title,
+      date: props.performance.ticket_date,
       image: props.performance.image
     }
   }
@@ -19,6 +20,7 @@ class PerformanceFrame extends React.Component {
         <div style={body}>
           <h4 style={header}>Virtual Playbill</h4>
           <PerformanceTitle title={this.state.title} />
+          <PerformanceDate date={this.state.date} />
           <PerformanceImage image={this.state.image} />
         </div>
       </div>

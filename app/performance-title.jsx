@@ -9,9 +9,10 @@ class PerformanceTitle extends React.Component {
 }
 
 let title = {
-  padding: '5px',
+  padding: '5px 20px',
   textAlign: 'center',
-  marginBottom: '0px'
+  margin: '0',
+  fontSize: '1.75em'
 }
 
 export default PerformanceTitle
