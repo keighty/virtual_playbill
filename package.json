@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
-    "test" : "echo 'No tests setup yet.'",
+    "test": "mocha",
     "precommit": "eslint .; npm test"
   },
   "dependencies": {
@@ -26,7 +26,9 @@
     "babel-loader": "6.2.1",
     "babel-preset-es2015": "6.3.13",
     "babel-preset-react": "6.3.13",
+    "chai": "3.5.0",
     "husky": "0.11.2",
+    "mocha": "2.4.5",
     "webpack": "1.12.12",
     "webpack-dev-server": "1.12.1"
   }
