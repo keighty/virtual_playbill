@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
-    "test": "mocha",
+    "karma-test": "karma start --reporters dots,coverage --single-run",
+    "istanbul-test": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha",
     "precommit": "eslint .; npm test"
   },
   "dependencies": {
@@ -27,7 +28,17 @@
     "babel-preset-es2015": "6.3.13",
     "babel-preset-react": "6.3.13",
     "chai": "3.5.0",
+    "karma": "^0.13.21",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-clear-screen-reporter": "^1.0.0",
+    "karma-cli": "^0.1.2",
+    "karma-coverage": "^0.5.5",
+    "karma-mocha": "^0.2.2",
+    "mocha": "^2.4.5",
     "husky": "0.11.2",
+    "istanbul": "0.4.3",
+    "karma": "0.13.22",
     "mocha": "2.4.5",
     "webpack": "1.12.12",
     "webpack-dev-server": "1.12.1"
