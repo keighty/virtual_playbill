@@ -1,4 +1,11 @@
-var connection = require('./connection')
+var db = require('./db')
+var dbName = db.dbName
+var onError = function (err) {
+  if (err) console.log('Something went wrong with the schema')
+  return
+}
+
+var connection = db.connect(onError)
 
 connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err) {
   if (err) throw err;
