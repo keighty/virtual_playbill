@@ -9,6 +9,7 @@ module.exports = {
     user: 'testvp'
   },
   connection: null,
+
   get: function () { return this.connection },
   close: function () {
     var self = this
@@ -17,18 +18,23 @@ module.exports = {
       self.connection = null
     }
   },
+
   connect: function (cb) {
     var self = this
     self.connection = mysql.createConnection(self.config, cb)
-    self.connection.connect(function (err) {
-      if (err) {
-        self.connection = null
-        cb(err)
-      } else {
-        cb(null)
-      }
+    self.connection.connect(cb, function () {
+      self.connection.query('CREATE DATABASE IF NOT EXISTS ' + self.dbName, cb, function () {
+        self.connection.query('USE ' + self.dbName, cb)
+      })
     })
-
     return self.connection
+  },
+
+  insert: function (data, cb) {
+    cb()
+  },
+
+  drop: function (tableName,cb) {
+    cb()
   }
 }

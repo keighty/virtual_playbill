@@ -1,9 +1,6 @@
 var db = require('./db')
 var dbName = db.dbName
-var onError = function (err) {
-  if (err) console.log('Something went wrong with the schema')
-  return
-}
+var onError = function (err) { if (err) throw err; }
 
 var connection = db.connect(onError)
 

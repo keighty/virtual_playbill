@@ -1,9 +1,6 @@
 var express = require('express')
 var router = express.Router()
-var onError = function (err) {
-  if (err) console.log('Something went wrong loading the performer file.')
-  return
-}
+var onError = function (err) { if (err) throw err; }
 var connection = require('../config/db').connect(onError)
 
 router.get('/:performerId', function (req, res, next) {

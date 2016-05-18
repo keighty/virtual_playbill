@@ -1,9 +1,6 @@
 var db = require('./db')
 var dbName = db.dbName
-var onError = function (err) {
-  if (err) console.log('Something went wrong running the seeds file')
-  return
-}
+var onError = function (err) { if (err) throw err; }
 
 var connection = db.connect(onError)
 
