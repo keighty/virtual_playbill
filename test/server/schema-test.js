@@ -1,12 +1,12 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var Schema = require('../../config/schema.js')
+var SchemaParser = require('../../config/schema-parser.js')
 
-describe.only('Schema tests', function () {
-  var schema, sandbox, table1
+describe('Schema tests', function () {
+  var schemaParser, sandbox, table1
 
   beforeEach(function () {
-    schema = new Schema()
+    schemaParser = new SchemaParser()
     sandbox = sinon.sandbox.create()
 
     table1 = {
@@ -28,26 +28,26 @@ describe.only('Schema tests', function () {
 
   describe('Column Definitions', function () {
     it('processTableSchema should invoke processColumns for a valid table schema', function (done) {
-      sandbox.stub(schema, 'processColumns', function (data) {
+      sandbox.stub(schemaParser, 'processColumns', function (data) {
         expect(data).to.be.eql(table1.columns)
         done()
         return []
       })
 
-      schema.processTableSchema(table1)
+      schemaParser.processTableSchema(table1)
     })
 
     it('processColumns should invoke processColumn for each column provided', function (done) {
       var columns = {
         fName: { type: 'string', maxlength: 66 }
       }
-      sandbox.stub(schema, 'processColumn', function (name, data) {
+      sandbox.stub(schemaParser, 'processColumn', function (name, data) {
         expect(name).to.be.eql('fName')
         expect(data).to.be.eql(columns.fName)
         done()
       })
 
-      schema.processTableSchema(table1)
+      schemaParser.processTableSchema(table1)
     })
 
     it('processColumns should return a list of SQL column definitions', function () {
@@ -55,7 +55,7 @@ describe.only('Schema tests', function () {
         fName: { type: 'string', maxlength: 66 },
         cmail:  { type: 'string', maxlength: 33, nonnull: true }
       }
-      var result = schema.processColumns(columns)
+      var result = schemaParser.processColumns(columns)
 
       expect(result.length).to.be.eql(2)
     })
@@ -67,18 +67,18 @@ describe.only('Schema tests', function () {
     }
 
     it('processColumn should call processType for a column', function (done) {
-      sandbox.stub(schema, 'processType', function (data) {
+      sandbox.stub(schemaParser, 'processType', function (data) {
         expect(data).to.be.eql(columns.fName)
         done()
       })
 
-      schema.processColumns(columns)
+      schemaParser.processColumns(columns)
     })
 
     it('processType should throw an error if there is no column type', function () {
       var props = {}
       var call = function () {
-        schema.processType(props)
+        schemaParser.processType(props)
       }
 
       expect(call).to.throw(Error, 'Invalid column type')
@@ -88,7 +88,7 @@ describe.only('Schema tests', function () {
       columns.fName.nonNullable = true
       var expectedSQL = 'fName VARCHAR(66) NOT NULL'
 
-      expect(schema.processColumn('fName', columns.fName)).to.be.eql(expectedSQL)
+      expect(schemaParser.processColumn('fName', columns.fName)).to.be.eql(expectedSQL)
     })
 
     describe('String', function () {
@@ -97,24 +97,24 @@ describe.only('Schema tests', function () {
       }
 
       it('processType should call processMaxLength for a string column', function (done) {
-        sandbox.stub(schema, 'processMaxLength', function (data) {
+        sandbox.stub(schemaParser, 'processMaxLength', function (data) {
           expect(data).to.be.eql(stringColumn.fName.maxlength)
           done()
         })
 
-        schema.processType(stringColumn.fName)
+        schemaParser.processType(stringColumn.fName)
       })
 
       it('processType should return valid syntax for a string type', function () {
         var expectedSQL = 'VARCHAR(66)'
 
-        expect(schema.processType(stringColumn.fName)).to.be.eql(expectedSQL)
+        expect(schemaParser.processType(stringColumn.fName)).to.be.eql(expectedSQL)
       })
 
       it('processColumn should return a valid SQL syntax for a string', function () {
         var expectedSQL = 'fName VARCHAR(66)'
 
-        expect(schema.processColumn('fName', stringColumn.fName)).to.be.eql(expectedSQL)
+        expect(schemaParser.processColumn('fName', stringColumn.fName)).to.be.eql(expectedSQL)
       })
     })
 
@@ -126,14 +126,14 @@ describe.only('Schema tests', function () {
       it('processType should return valid syntax for an INT type', function () {
         var expectedSQL = 'id INT NOT NULL'
 
-        expect(schema.processColumn('id', intColumn.id)).to.be.eql(expectedSQL)
+        expect(schemaParser.processColumn('id', intColumn.id)).to.be.eql(expectedSQL)
       })
     })
 
     describe('MaxLength', function () {
       it('processMaxLength should throw an error if it has no maxlength prop', function () {
         var call = function () {
-          schema.processMaxLength(undefined)
+          schemaParser.processMaxLength(undefined)
         }
 
         expect(call).to.throw(Error, 'Invalid schema: no maxlength')
@@ -142,7 +142,7 @@ describe.only('Schema tests', function () {
       it('processMaxLength should return valid syntax for maxLength', function () {
         var expectedSQL = '(66)'
 
-        expect(schema.processMaxLength(columns.fName.maxlength)).to.be.eql(expectedSQL)
+        expect(schemaParser.processMaxLength(columns.fName.maxlength)).to.be.eql(expectedSQL)
       })
     })
 
@@ -152,49 +152,50 @@ describe.only('Schema tests', function () {
       }
 
       it('processType should call processAutoIncrement', function (done) {
-        sandbox.stub(schema, 'processAutoIncrement', function (data) {
+        sandbox.stub(schemaParser, 'processAutoIncrement', function (data) {
           expect(data).to.be.eql(intColumn.id.auto)
           done()
         })
 
-        schema.processType(intColumn.id)
+        schemaParser.processType(intColumn.id)
       })
 
       it('processAutoIncrement should return an empty string if the column is not auto-incremented', function () {
         var auto = undefined
 
-        expect(schema.processAutoIncrement(auto)).to.be.eql('')
+        expect(schemaParser.processAutoIncrement(auto)).to.be.eql('')
       })
 
       it('processAutoIncrement should return AUTO_INCREMENT if the colum is auto-increments', function () {
         var auto = {auto: true}
         var expectedSQL = ' AUTO_INCREMENT'
 
-        expect(schema.processAutoIncrement(auto)).to.be.eql(expectedSQL)
+        expect(schemaParser.processAutoIncrement(auto)).to.be.eql(expectedSQL)
       })
     })
   })
 
   describe('Primary Key', function () {
     it('processTableSchema should call processPrimaryKey for the table schema', function (done) {
-      sandbox.stub(schema, 'processPrimaryKey', function (data) {
+      sandbox.stub(schemaParser, 'processPrimaryKey', function (data) {
         expect(data).to.be.eql(table1.primaryKey)
         done()
       })
 
-      schema.processTableSchema(table1)
+      schemaParser.processTableSchema(table1)
     })
 
     it('processPrimaryKey should return valid PRIMARY KEY SQL syntax', function () {
       var primaryKey = 'fName'
       var expectedSQL = 'PRIMARY KEY (fName)'
-      expect(schema.processPrimaryKey(primaryKey)).to.be.eql(expectedSQL)
+
+      expect(schemaParser.processPrimaryKey(primaryKey)).to.be.eql(expectedSQL)
     })
 
     it('processPrimaryKey should throw an error if no valid primary key is set', function () {
       var primaryKey = undefined
       var call = function () {
-        schema.processPrimaryKey(primaryKey)
+        schemaParser.processPrimaryKey(primaryKey)
       }
 
       expect(call).to.throw(Error, 'No primary key specified')
@@ -204,7 +205,7 @@ describe.only('Schema tests', function () {
       var primaryKey = ['fName', 'cmail']
       var expectedSQL = 'PRIMARY KEY (fName,cmail)'
 
-      expect(schema.processPrimaryKey(primaryKey)).to.be.eql(expectedSQL)
+      expect(schemaParser.processPrimaryKey(primaryKey)).to.be.eql(expectedSQL)
     })
   })
 
@@ -220,24 +221,24 @@ describe.only('Schema tests', function () {
     }
 
     it('processTableSchema should call processForeignKey for the table schema', function (done) {
-      sandbox.stub(schema, 'processForeignKey', function (data) {
+      sandbox.stub(schemaParser, 'processForeignKey', function (data) {
         expect(data).to.be.eql(tableWithForeignKey.foreignKey)
         done()
       })
 
-      schema.processTableSchema(tableWithForeignKey)
+      schemaParser.processTableSchema(tableWithForeignKey)
     })
 
     it('processForeignKey should return valid FOREIGN KEY SQL syntax', function () {
       var expectedSQL = 'FOREIGN KEY (fName) REFERENCES foo(bar)'
 
-      expect(schema.processForeignKey(tableWithForeignKey.foreignKey)).to.be.eql(expectedSQL)
+      expect(schemaParser.processForeignKey(tableWithForeignKey.foreignKey)).to.be.eql(expectedSQL)
     })
 
     it('processForeignKey should return null if no foreign key specified', function () {
       var noForeignKey = {}
 
-      expect(schema.processForeignKey(noForeignKey.foreignKey)).to.be.eql(undefined)
+      expect(schemaParser.processForeignKey(noForeignKey.foreignKey)).to.be.eql(undefined)
     })
   })
 
@@ -270,13 +271,13 @@ describe.only('Schema tests', function () {
         'lName VARCHAR(60)',
         'email VARCHAR(90)'
       ]
-      sandbox.stub(schema, 'polishColumns', function (data) {
+      sandbox.stub(schemaParser, 'polishColumns', function (data) {
         expect(data).to.be.eql(expectedArgs)
         done()
         return []
       })
 
-      schema.processTableSchema(basicTable)
+      schemaParser.processTableSchema(basicTable)
     })
 
     it('polishColumns should return a properly formatted string with a fk', function () {
@@ -286,7 +287,7 @@ describe.only('Schema tests', function () {
       var pk = 'PRIMARY KEY (crunchy)'
       var fk = 'FOREIGN KEY (bacon) REFERENCES canadian(bacon)'
 
-      expect(schema.polishColumns([col1, col2], pk, fk)).to.be.eql(expectedSQL)
+      expect(schemaParser.polishColumns([col1, col2], pk, fk)).to.be.eql(expectedSQL)
     })
 
     it('polishColumns should return a properly formatted string without a fk', function () {
@@ -296,19 +297,19 @@ describe.only('Schema tests', function () {
       var pk = 'PRIMARY KEY (crunchy)'
       var fk = undefined
 
-      expect(schema.polishColumns([col1, col2], pk, fk)).to.be.eql(expectedSQL)
+      expect(schemaParser.polishColumns([col1, col2], pk, fk)).to.be.eql(expectedSQL)
     })
 
     it('processTableSchema should return valid CREATE TABLE sql for basicTable', function () {
       var expectedFinalSQL = 'CREATE TABLE IF NOT EXISTS basic (id INT AUTO_INCREMENT NOT NULL, fName VARCHAR(60), lName VARCHAR(60), email VARCHAR(90), PRIMARY KEY (id))'
 
-      expect(schema.processTableSchema(basicTable)).to.be.eql(expectedFinalSQL)
+      expect(schemaParser.processTableSchema(basicTable)).to.be.eql(expectedFinalSQL)
     })
 
     it('processTableSchema should return valid CREATE TABLE sql for a complexTable', function () {
       var expectedFinalSQL = 'CREATE TABLE IF NOT EXISTS complex (fName VARCHAR(60), email VARCHAR(90) NOT NULL, PRIMARY KEY (fName,email), FOREIGN KEY (email) REFERENCES basic(email))'
 
-      expect(schema.processTableSchema(complexTable)).to.be.eql(expectedFinalSQL)
+      expect(schemaParser.processTableSchema(complexTable)).to.be.eql(expectedFinalSQL)
     })
   })
 })

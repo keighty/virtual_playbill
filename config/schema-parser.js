@@ -1,11 +1,10 @@
-var Schema = function () {
+var SchemaParser = function () {
   this.processTableSchema = function (tableSchema) {
     var baseSQL = 'CREATE TABLE IF NOT EXISTS'
     var tableName = tableSchema.name
     var columns = this.processColumns(tableSchema.columns)
     var primaryKey = this.processPrimaryKey(tableSchema.primaryKey)
     var foreignKey = this.processForeignKey(tableSchema.foreignKey)
-
     var finalColumns = this.polishColumns(columns, primaryKey, foreignKey)
 
     return [baseSQL, tableName, finalColumns].join(' ')
@@ -89,4 +88,4 @@ var performance = {
   image: { type: 'string', maxlength: 260 }
 }
 
-module.exports = Schema
+module.exports = SchemaParser
