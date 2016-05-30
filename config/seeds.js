@@ -1,4 +1,8 @@
-var connection = require('./connection')
+var db = require('./db')
+var dbName = db.dbName
+var onError = function (err) { if (err) throw err; }
+
+var connection = db.connect(onError)
 
 connection.query('USE virtual_playbill', function (err) {
   if (err) throw err;

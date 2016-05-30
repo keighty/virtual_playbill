@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router()
-var connection = require('../config/connection')
+var onError = function (err) { if (err) throw err; }
+var connection = require('../config/db').connect(onError)
 
 // GET /user/1/performances
 router.get('/:userId/performances', function (req, res, next) {
