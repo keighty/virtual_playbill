@@ -1,4 +1,5 @@
 var mysql = require('mysql')
+var SchemaParser = require('./schema-parser')
 
 module.exports = {
   dbName: 'virtual_playbill',
@@ -36,5 +37,14 @@ module.exports = {
 
   drop: function (tableName,cb) {
     cb()
+  },
+
+  createDatabase: function (schema) {
+    var schema = this.getSchema(schema)
+  },
+
+  getSchema: function (schema) {
+    var sp = new SchemaParser()
+    return sp.parseSchema(schema)
   }
 }

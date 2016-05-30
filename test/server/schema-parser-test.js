@@ -1,8 +1,9 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
 var SchemaParser = require('../../config/schema-parser.js')
+var testSchema = require('../helpers/test-schema')
 
-describe('Schema tests', function () {
+describe('SchemaParser tests', function () {
   var schemaParser, sandbox, table1
 
   beforeEach(function () {
@@ -130,6 +131,18 @@ describe('Schema tests', function () {
       })
     })
 
+    describe('Date', function () {
+      var dateColumn = {
+        ticket_date: {type: 'date'}
+      }
+
+      it('processType should return valid syntax for a DATE type', function () {
+        var expectedSQL = 'ticket_date DATE'
+
+        expect(schemaParser.processColumn('ticket_date', dateColumn.ticket_date)).to.be.eql(expectedSQL)
+      })
+    })
+
     describe('MaxLength', function () {
       it('processMaxLength should throw an error if it has no maxlength prop', function () {
         var call = function () {
@@ -210,29 +223,19 @@ describe('Schema tests', function () {
   })
 
   describe('Foreign Key', function () {
-    var tableWithForeignKey = {
-      name: 'foreigner',
-      columns: {
-        fName: { type: 'string', maxlength: 66 },
-        cmail:  { type: 'string', maxlength: 33, nonnull: true }
-      },
-      primaryKey: ['cmail', 'fName'],
-      foreignKey: { colName: 'fName', referenceTable: 'foo', referenceCol: 'bar' }
-    }
-
     it('processTableSchema should call processForeignKey for the table schema', function (done) {
       sandbox.stub(schemaParser, 'processForeignKey', function (data) {
-        expect(data).to.be.eql(tableWithForeignKey.foreignKey)
+        expect(data).to.be.eql(testSchema.basicTable.foreignKey)
         done()
       })
 
-      schemaParser.processTableSchema(tableWithForeignKey)
+      schemaParser.processTableSchema(testSchema.basicTable)
     })
 
     it('processForeignKey should return valid FOREIGN KEY SQL syntax', function () {
       var expectedSQL = 'FOREIGN KEY (fName) REFERENCES foo(bar)'
 
-      expect(schemaParser.processForeignKey(tableWithForeignKey.foreignKey)).to.be.eql(expectedSQL)
+      expect(schemaParser.processForeignKey(testSchema.basicTable.foreignKey)).to.be.eql(expectedSQL)
     })
 
     it('processForeignKey should return null if no foreign key specified', function () {
@@ -240,30 +243,16 @@ describe('Schema tests', function () {
 
       expect(schemaParser.processForeignKey(noForeignKey.foreignKey)).to.be.eql(undefined)
     })
+
+    it('processForeignKey should handle an array of foreign keys', function () {
+      var expectedSQL = 'FOREIGN KEY (fName) REFERENCES foo(bar), FOREIGN KEY (email) REFERENCES crunchy(bacon)'
+
+      expect(schemaParser.processForeignKey(testSchema.complexTable.foreignKey)).to.be.eql(expectedSQL)
+
+    })
   })
 
   describe('Table Schema', function () {
-    var basicTable = {
-      name: 'basic',
-      columns: {
-        id: {type: 'int', nonNullable: true, auto: true},
-        fName: { type: 'string', maxlength: 60 },
-        lName: { type: 'string', maxlength: 60 },
-        email: { type: 'string', maxlength: 90, nonnull: true }
-      },
-      primaryKey: 'id'
-    }
-
-    var complexTable = {
-      name: 'complex',
-      columns: {
-        fName: {type: 'string', maxlength: 60},
-        email: { type: 'string', maxlength: 90, nonNullable: true }
-      },
-      primaryKey: ['fName', 'email'],
-      foreignKey: {colName: 'email', referenceTable: 'basic', referenceCol: 'email'}
-    }
-
     it('processTableSchema should call polishColumns', function (done) {
       var expectedArgs = [
         'id INT AUTO_INCREMENT NOT NULL',
@@ -277,7 +266,7 @@ describe('Schema tests', function () {
         return []
       })
 
-      schemaParser.processTableSchema(basicTable)
+      schemaParser.processTableSchema(testSchema.basicTable)
     })
 
     it('polishColumns should return a properly formatted string with a fk', function () {
@@ -301,15 +290,35 @@ describe('Schema tests', function () {
     })
 
     it('processTableSchema should return valid CREATE TABLE sql for basicTable', function () {
-      var expectedFinalSQL = 'CREATE TABLE IF NOT EXISTS basic (id INT AUTO_INCREMENT NOT NULL, fName VARCHAR(60), lName VARCHAR(60), email VARCHAR(90), PRIMARY KEY (id))'
+      var expectedFinalSQL = 'CREATE TABLE IF NOT EXISTS basic (id INT AUTO_INCREMENT NOT NULL, fName VARCHAR(60), lName VARCHAR(60), email VARCHAR(90), PRIMARY KEY (id), FOREIGN KEY (fName) REFERENCES foo(bar));'
 
-      expect(schemaParser.processTableSchema(basicTable)).to.be.eql(expectedFinalSQL)
+      expect(schemaParser.processTableSchema(testSchema.basicTable)).to.be.eql(expectedFinalSQL)
     })
 
     it('processTableSchema should return valid CREATE TABLE sql for a complexTable', function () {
-      var expectedFinalSQL = 'CREATE TABLE IF NOT EXISTS complex (fName VARCHAR(60), email VARCHAR(90) NOT NULL, PRIMARY KEY (fName,email), FOREIGN KEY (email) REFERENCES basic(email))'
+      var expectedFinalSQL = 'CREATE TABLE IF NOT EXISTS complex (fName VARCHAR(60), email VARCHAR(90) NOT NULL, PRIMARY KEY (fName,email), FOREIGN KEY (fName) REFERENCES foo(bar), FOREIGN KEY (email) REFERENCES crunchy(bacon));'
 
-      expect(schemaParser.processTableSchema(complexTable)).to.be.eql(expectedFinalSQL)
+      expect(schemaParser.processTableSchema(testSchema.complexTable)).to.be.eql(expectedFinalSQL)
+    })
+  })
+
+  describe('Full Schema', function () {
+    it('parseSchema should call processTableSchema for each table', function () {
+      var schemaParserMock = sandbox.mock(schemaParser)
+      schemaParserMock.expects('processTableSchema').withArgs(testSchema.basicTable)
+      schemaParserMock.expects('processTableSchema').withArgs(testSchema.complexTable)
+
+      schemaParser.parseSchema(testSchema)
+      schemaParserMock.verify()
+    })
+
+    it('parseSchema should return valid SQL to create the schema', function () {
+      var expectedSQL = [
+        'CREATE TABLE IF NOT EXISTS basic (id INT AUTO_INCREMENT NOT NULL, fName VARCHAR(60), lName VARCHAR(60), email VARCHAR(90), PRIMARY KEY (id), FOREIGN KEY (fName) REFERENCES foo(bar));',
+        'CREATE TABLE IF NOT EXISTS complex (fName VARCHAR(60), email VARCHAR(90) NOT NULL, PRIMARY KEY (fName,email), FOREIGN KEY (fName) REFERENCES foo(bar), FOREIGN KEY (email) REFERENCES crunchy(bacon));'
+      ]
+
+      expect(schemaParser.parseSchema(testSchema)).to.be.eql(expectedSQL)
     })
   })
 })
@@ -318,7 +327,6 @@ describe('Schema tests', function () {
 /* ROUGH WORK
 
 mysql> describe complex
-    -> ;
 +-------+-------------+------+-----+---------+-------+
 | Field | Type        | Null | Key | Default | Extra |
 +-------+-------------+------+-----+---------+-------+
@@ -328,7 +336,6 @@ mysql> describe complex
 2 rows in set (0.02 sec)
 
 mysql> describe basic
-    -> ;
 +-------+-------------+------+-----+---------+-------+
 | Field | Type        | Null | Key | Default | Extra |
 +-------+-------------+------+-----+---------+-------+
