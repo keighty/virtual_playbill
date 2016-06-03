@@ -2,6 +2,35 @@ var expect = require('chai').expect
 var db = require('../../config/db')
 var performance = require('../../models/performance')
 
+var existingData = [
+  {
+    category: "test category",
+    choreographer: "test choreo",
+    company: "test company",
+    director: "test director",
+    id: 1,
+    image: "https://virtualplaybill.s3.amazonaws.com/1455412796794_Baba_Yaga",
+    music: "test music",
+    playwright: "test author",
+    synopsis: "test synopsis -- morning is wiser than evening",
+    title: "Baba Yaga",
+    venue: "Fertile Ground Festival Venue"
+  },
+  {
+    category: "test category",
+    choreographer: "test choreo",
+    company: "test company",
+    director: "test director",
+    id: 2,
+    image: "https://virtualplaybill.s3.amazonaws.com/1455413120510_Buried_Fire",
+    music: "test music",
+    playwright: "test author",
+    synopsis: "test synopsis -- chicken pot pie",
+    title: "Buried Fire",
+    venue: "Fertile Ground Festival Venue"
+  }
+]
+
 describe('performance model tests', function () {
   var samplePerformance1, samplePerformance2, samplePerformances
 
@@ -55,9 +84,9 @@ describe('performance model tests', function () {
     expect(true).to.be.true
   })
 
-  xit('all should return all the performances', function (done) {
+  it.only('all should return all the performances', function (done) {
     var cb = function (err, performances) {
-      expect(performances).to.be.eql(samplePerformances)
+      expect(performances).to.be.eql(existingData)
       done()
     }
 

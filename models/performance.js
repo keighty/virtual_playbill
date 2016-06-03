@@ -4,6 +4,9 @@ var tableName = 'performance'
 
 module.exports = {
   all: function (cb) {
-    db.connect(onError)
+    var connection = db.connect(onError, cb)
+    var query = 'SELECT * from performance;'
+
+    connection.query(query, cb)
   }
 }
