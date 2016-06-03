@@ -1,6 +1,6 @@
 var expect = require('chai').expect
-var db = require('../../config/db')
-var performance = require('../../models/performance')
+var db = require('../../../config/db')
+var performance = require('../../../models/performance')
 
 var existingData = [
   {
@@ -31,7 +31,7 @@ var existingData = [
   }
 ]
 
-describe('performance model tests', function () {
+describe.only('performance model tests', function () {
   var samplePerformance1, samplePerformance2, samplePerformances
 
   before(function (done) {
@@ -84,7 +84,7 @@ describe('performance model tests', function () {
     expect(true).to.be.true
   })
 
-  it.only('all should return all the performances', function (done) {
+  it('all should return all the performances', function (done) {
     var cb = function (err, performances) {
       expect(performances).to.be.eql(existingData)
       done()
