@@ -1,4 +1,5 @@
 var expect = require('chai').expect
+var sinon = require('sinon')
 var db = require('../../../config/db')
 var performance = require('../../../models/performance')
 
@@ -33,6 +34,7 @@ var existingData = [
 
 describe('performance model tests', function () {
   var samplePerformance1, samplePerformance2, samplePerformances
+  var sandbox
 
   before(function (done) {
     db.connect(done)
@@ -74,10 +76,12 @@ describe('performance model tests', function () {
     ]
 
     db.insert(samplePerformances, done)
+    sandbox = sinon.sandbox.create()
   })
 
   afterEach(function (done) {
     db.drop('performance', done)
+    sandbox.restore()
   })
 
   it('should pass this canary test', function () {
@@ -91,6 +95,21 @@ describe('performance model tests', function () {
     }
 
     performance.all(cb)
+  })
+
+  xit('all should throw a sql error if the records can\'t be found', function (done) {})
+
+  it('get should return a performance with a given id', function (done) {
+    var cb = function (err, performance) {
+      performance = performance[0]
+      actual = existingData[0]
+
+      expect(performance.title).to.be.eql(actual.title)
+      expect(performance.playwrite).to.be.eql(actual.playwrite)
+      done()
+    }
+
+    performance.get(1, cb)
   })
 })
 
