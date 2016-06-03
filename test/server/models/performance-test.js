@@ -31,7 +31,7 @@ var existingData = [
   }
 ]
 
-describe.only('performance model tests', function () {
+describe('performance model tests', function () {
   var samplePerformance1, samplePerformance2, samplePerformances
 
   before(function (done) {
