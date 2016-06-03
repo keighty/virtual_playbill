@@ -2,7 +2,7 @@ var expect = require('chai').expect
 var sinon = require('sinon')
 var db = require('../../config/db')
 var schema = require('../helpers/test-schema')
-var schemaParser = require('../../config/schema-parser')
+var SchemaParser = require('../../config/schema-parser')
 
 describe('db tests', function () {
   it('should pass this canary test', function () {
@@ -47,51 +47,109 @@ describe('db tests', function () {
   })
 
   describe('Create a database', function () {
-    var sandbox
+    var sandbox, schemaParser, result, onError, basicQuery
+
+    before(function () {
+      schemaParser = new SchemaParser()
+      result = schemaParser.parseSchema(schema)
+      onError = function (err) { if (err) throw err }
+      basicQuery = 'CREATE TABLE IF NOT EXISTS foo (id INT AUTO_INCREMENT NOT NULL, PRIMARY KEY (id));'
+    })
+
     beforeEach(function () {
       sandbox = sinon.sandbox.create()
+      db.connect(onError)
     })
 
     afterEach(function () {
       sandbox.restore()
+      db.close()
     })
 
     it('should parse a given schema', function (done) {
-      sandbox.stub(db, 'getSchema', function (data) {
+      sandbox.stub(db, 'getSchemas', function (data) {
         expect(data).to.be.eql(schema)
         done()
+        return []
       })
 
       db.createDatabase(schema)
     })
 
-    it('getSchema should return an array of table schemas', function () {
-      var result = [
-        "CREATE TABLE IF NOT EXISTS basic (id INT AUTO_INCREMENT NOT NULL, fName VARCHAR(60), lName VARCHAR(60), email VARCHAR(90), PRIMARY KEY (id), FOREIGN KEY (fName) REFERENCES foo(bar));",
-        "CREATE TABLE IF NOT EXISTS complex (fName VARCHAR(60), email VARCHAR(90) NOT NULL, PRIMARY KEY (fName,email), FOREIGN KEY (fName) REFERENCES foo(bar), FOREIGN KEY (email) REFERENCES crunchy(bacon));"
-      ]
-
-      expect(db.getSchema(schema)).to.be.eql(result)
+    it('getSchemas should return an array of table schemas', function () {
+      expect(db.getSchemas(schema)).to.be.eql(result)
     })
 
-    xit('should call createTable for each table schema', function () {
-      var onError = function (err) { if (err) throw err; }
-
+    it('should call createTable for each table schema', function () {
       var dbMock = sandbox.mock(db)
-      dbMock.expects('createTable').withArgs(basicTable, onError)
-      dbMock.expects('processTableSchema').withArgs(complexTable, onError)
+      dbMock.expects('createTable').withArgs(result[0])
+      dbMock.expects('createTable').withArgs(result[1])
 
       db.createDatabase(schema)
       dbMock.verify()
     })
-  })
-  // it('should create a database from a given schema', function () {
-  //   var callback = function (err) {
-  //     expect(err).to.be.null
-  //     db.close()
-  //     done()
-  //   }
 
-  //   db.create
-  // })
+    it('createTable should grab the existing database connection', function (done) {
+      sandbox.stub(db, 'get', function () {
+        done()
+      })
+
+      db.createTable(basicQuery)
+    })
+
+    it('createTable should get a new Connection if there is not one available', function (done) {
+      sandbox.stub(db, 'get').returns(null)
+      sandbox.stub(db, 'connect', function () {
+        done()
+      })
+
+      db.createTable(basicQuery)
+    })
+
+    xit('createTable should send the table schema and an onError callback', function (done) {
+      var connect = {
+        query: function (schema, cb) {
+          done()
+        }
+      }
+
+      sandbox.stub(db, 'get').returns(connect)
+
+      db.createTable(basicQuery)
+    })
+
+    xit('createTable should report sql errors', function () {})
+    xit('createTable should successfully create a database table', function () {})
+  })
+
+  describe('Drop a table', function () {
+    var sandbox, onError
+
+    before(function () {
+      onError = function (err) { if (err) throw err }
+    })
+
+    beforeEach(function () {
+      sandbox = sinon.sandbox.create()
+      db.connect(onError)
+    })
+
+    afterEach(function () {
+      sandbox.restore()
+      db.close()
+    })
+
+    xit('should drop a table', function (done) {
+    })
+
+    xit('dropTable should throw an error for an invalid table name', function () {
+      var cb = function (err, data) {}
+
+      var call = function () {
+        db.dropTable('undefinedTableName', cb)
+      }
+
+      expect(call).to.throw(Error, 'ER_BAD_TABLE_ERROR: Unknown table \'virtual_playbill.undefinedtablename\'')
+    })
+  })
 })

@@ -10,6 +10,7 @@ module.exports = {
     user: 'testvp'
   },
   connection: null,
+  onError: function (err) { if (err) throw err },
 
   get: function () { return this.connection },
   close: function () {
@@ -40,11 +41,31 @@ module.exports = {
   },
 
   createDatabase: function (schema) {
-    var schema = this.getSchema(schema)
+    var self = this
+    var schemas = this.getSchemas(schema)
+
+    schemas.forEach(function (schema) {
+      self.createTable(schema)
+    })
   },
 
-  getSchema: function (schema) {
+  getSchemas: function (schema) {
     var sp = new SchemaParser()
     return sp.parseSchema(schema)
+  },
+
+  createTable: function (tableSchema) {
+    var self = this
+    var connection = self.get() || self.connect(self.onError)
+    self.connection.query(tableSchema, self.onError)
+  },
+
+  dropTable: function (tableName, cb) {
+    var self = this
+    var connection = self.get() || self.connect(self.onError)
+    self.connection.query('DROP TABLE ' + tableName + ';', function (err, data) {
+      if (err) throw err
+      cb()
+    })
   }
 }
