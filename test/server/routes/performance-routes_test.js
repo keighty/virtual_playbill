@@ -3,7 +3,7 @@ var sinon = require('sinon')
 var performance = require('../../../models/performance')
 var express = require('express')
 
-describe.only('performance routes', function () {
+describe('performance routes', function () {
   var sandbox, router
 
   beforeEach(function () {
