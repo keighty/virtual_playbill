@@ -17,5 +17,6 @@ module.exports = {
     connection.query(query, cb)
   },
 
-  add: function () {}
+  add: function () {},
+  delete: function () {}
 }

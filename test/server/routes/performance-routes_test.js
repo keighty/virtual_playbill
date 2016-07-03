@@ -70,14 +70,29 @@ describe.only('performance routes', function () {
       var registeredCallback = router.post.firstCall.args[1]
       registeredCallback(req, res)
     })
+
+    it('post should return error message on failure', function (done) {
+      var sample = {foo: 'bar'}
+
+      sandbox.stub(performance, 'add', function (newPerformance, cb) {
+        expect(newPerformance).to.be.eql(sample)
+        cb(new Error('unable to add performance'))
+      })
+
+      var req = {body: sample}
+      var res = stubResSend('unable to add performance', done)
+
+      var registeredCallback = router.post.firstCall.args[1]
+      registeredCallback(req, res)
+    })
   })
 
   describe('/:id', function () {
-    it('should register get', function () {
+    it('get should be registered', function () {
       expect(router.get.calledWith('/:id', sandbox.match.any)).to.be.true
     })
 
-    it('should have a handler that calls the models get method and returns a result', function (done) {
+    it('get should call performance.get() and return a result', function (done) {
       var sample = {foo: 'bar', id: 1}
       sandbox.stub(performance, 'get', function (id, cb) {
         expect(id).to.be.eql(req.params.id)
@@ -91,7 +106,7 @@ describe.only('performance routes', function () {
       registeredCallback(req, res)
     })
 
-    it('should return {} for an invalid id', function (done) {
+    it('get should return {} for an invalid id', function (done) {
       var sample = {}
 
       sandbox.stub(performance, 'get', function (id, cb) {
@@ -103,6 +118,36 @@ describe.only('performance routes', function () {
       var res = stubResSend(sample, done)
 
       var registeredCallback = router.get.secondCall.args[1]
+      registeredCallback(req, res)
+    })
+
+    it('delete should be registered', function () {
+      expect(router.delete.calledWith('/:id', sandbox.match.any)).to.be.true
+    })
+
+    it('delete should call performance.delete() and return success', function (done) {
+      sandbox.stub(performance, 'delete', function (id, cb) {
+        expect(id).to.be.eql(req.params.id)
+        cb(null)
+      })
+
+      var req = {params: {id: 1}}
+      var res = stubResSend('performance deleted', done)
+
+      var registeredCallback = router.delete.firstCall.args[1]
+      registeredCallback(req, res)
+    })
+
+    it('delete should return an error message on failure', function (done) {
+      sandbox.stub(performance, 'delete', function (id, cb) {
+        expect(id).to.be.eql(req.params.id)
+        cb(new Error('unable to delete performance with id: 666'))
+      })
+
+      var req = {params: {id: 666}}
+      var res = stubResSend('unable to delete performance with id: 666', done)
+
+      var registeredCallback = router.delete.firstCall.args[1]
       registeredCallback(req, res)
     })
 

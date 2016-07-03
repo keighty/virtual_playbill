@@ -11,8 +11,9 @@ router.get('/', function (req, res, next) {
 
 router.post('/', function (req, res, next) {
   var newPerformance = req.body
-  performance.add(newPerformance, function (err, success) {
-    res.send('performance added')
+  performance.add(newPerformance, function (err) {
+    if (err) res.send(err.message)
+    else res.send('performance added')
   })
 })
 
@@ -20,6 +21,13 @@ router.get('/:id', function (req, res, next) {
   performance.get(req.params.id, function (err, performance) {
     if (performance) res.send(performance)
     else res.send({})
+  })
+})
+
+router.delete('/:id', function (req, res, next) {
+  performance.delete(req.params.id, function (err, success) {
+    if (err) res.send(err.message)
+    else res.send('performance deleted')
   })
 })
 
