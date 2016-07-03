@@ -15,5 +15,7 @@ module.exports = {
     var query = 'SELECT * FROM performance WHERE ID=' + performanceId
 
     connection.query(query, cb)
-  }
+  },
+
+  add: function () {}
 }
