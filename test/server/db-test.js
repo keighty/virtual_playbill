@@ -42,26 +42,29 @@ describe.only('Database', function () {
     expect(db.mysql).to.be.eql(mysql)
   })
 
+  it('connection should be null by default', function () {
+    expect(db.connection).to.be.null
+  })
+
   describe('connect', function () {
-    it('connection should be null by default', function () {
-      expect(db.connection).to.be.null
+    beforeEach(function () {
+      mysqlMock.expects('createConnection')
+                .withArgs(config)
+                .returns(connection)
+    })
+
+    afterEach(function () {
+      mysqlMock.verify()
     })
 
     it('should call mysql.createConnection', function () {
       var cb = function () {}
-      mysqlMock.expects('createConnection')
-                .withArgs(config)
-                .returns(connection)
 
       db.connect(cb)
-      mysqlMock.verify()
     })
 
     it('should call connection.connect() and pass a callback', function (done) {
       var cb = function () { done() }
-      mysqlMock.expects('createConnection')
-                .withArgs(config)
-                .returns(connection)
 
       db.connect(cb)
       var registeredCallback = connection.connect.firstCall.args[0]
@@ -70,9 +73,6 @@ describe.only('Database', function () {
 
     it('should return a connection', function (done) {
       var cb = function () { done() }
-      mysqlMock.expects('createConnection')
-                .withArgs(config)
-                .returns(connection)
 
       var result = db.connect(cb)
       expect(result).to.be.eql(connection)
