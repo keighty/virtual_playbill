@@ -1,6 +1,9 @@
+var mysql = require('mysql')
+var dbconfig = require('./db-config')
+
 var Database = function (database, config) {
-  this.mysql = database
-  this.config = config
+  this.mysql = database || mysql
+  this.config = config || dbconfig
   this.connection = null
 
   this.connect = function (cb) {
