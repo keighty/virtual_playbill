@@ -3,12 +3,16 @@ var sinon = require('sinon')
 var performance = require('../../../models/performance')
 var Database = require('../../../config/db')
 
-describe('performance model', function () {
-  var mockdb, sandbox
+describe.only('performance model', function () {
+  var mockdb, sandbox, connection
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create()
-    mockdb = sandbox.mock(new Database())
+    mockdb = sandbox.mock(performance.db)
+    connection = {
+      connect: sandbox.spy(),
+      query: sandbox.spy()
+    }
   })
 
   afterEach(function () {
@@ -18,6 +22,21 @@ describe('performance model', function () {
 
   it('should pass this canary test', function () {
     expect(true).to.be.true
+  })
+
+  describe('#all', function () {
+    it('should call connect', function () {
+      var cb = function () {}
+
+      mockdb.expects('connect')
+            .withArgs(cb)
+            .returns(connection)
+
+      performance.all(cb)
+    })
+    xit('should return all performances', function () {
+
+    })
   })
 
   // describe('all', function () {

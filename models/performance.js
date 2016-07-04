@@ -3,6 +3,8 @@ var db = new Database()
 var tableName = 'performance'
 
 module.exports = {
+  db: db,
+
   all: function (cb) {
     var connection = db.connect(cb)
     var query = 'SELECT * from performance;'
