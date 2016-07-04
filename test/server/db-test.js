@@ -19,7 +19,7 @@ describe.only('Database', function () {
       }
     connection = {
       connect: sinon.spy(),
-      query: function () {}
+      query: sinon.spy()
     }
 
     db = new Database(mysql, config)
@@ -68,40 +68,18 @@ describe.only('Database', function () {
       registeredCallback()
     })
 
-    xit('should return a connection', function (done) {
+    it('should return a connection', function (done) {
       var cb = function () { done() }
       mysqlMock.expects('createConnection')
                 .withArgs(config)
                 .returns(connection)
 
       var result = db.connect(cb)
-      // sandbox.stub(connection, 'connect', function (args) {
-      //   expect(args).to.be.eql(cb)
-      // })
+      expect(result).to.be.eql(connection)
 
-      // var result = db.connect(cb)
-      // expect(result).to.be.eql(connection)
-      // expect(db.connect(cb)).to.be.eql(connection)
+      var registeredCallback = connection.connect.firstCall.args[0]
+      registeredCallback()
     })
-
-    // xit('should connect to the database', function (done) {
-    //   var callback = function (err) {
-    //     expect(err).to.be.null
-    //     expect(db.connection).to.be.eql(connection)
-    //   }
-
-    //   db.connect(callback)
-    // })
-  //   xit('connect should set connection', function (done) {
-    //   var callback = function (err) {
-    //     expect(err).to.be.null
-    //     expect(db.get().config.database).to.be.eql('virtual_playbill')
-    //     db.close()
-    //     done()
-    //   }
-
-    //   db.connect(callback)
-    // })
 
     xit('should perform queries on the database', function () {})
     xit('should throw a sql error if the query cannot be performed', function () {})

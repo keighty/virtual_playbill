@@ -79,7 +79,7 @@ var Database = function (database, config) {
     var self = this
     self.connection = self.mysql.createConnection(self.config)
     self.connection.connect(cb)
-    // return self.connection
+    return self.connection
   }
 }
 
