@@ -79,7 +79,21 @@ var Database = function (database, config) {
     var self = this
     self.connection = self.mysql.createConnection(self.config)
     self.connection.connect(cb)
+    // self.connection.query('USE ' + self.dbName, cb)
     return self.connection
+  }
+
+  this.query = function (sql, cb) {
+    var self = this
+    if (self.connection) self.connection.query(sql, cb)
+    else throw new Error('Bad connection')
+  }
+
+  this.close = function () {
+    if (this.connection) {
+      this.connection.end()
+      this.connection = null
+    }
   }
 }
 
