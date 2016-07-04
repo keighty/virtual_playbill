@@ -1,6 +1,6 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var db = require('../../../config/db')
+var Database = require('../../../config/db')
 var performance = require('../../../models/performance')
 
 var existingData = [
@@ -32,11 +32,12 @@ var existingData = [
   }
 ]
 
-describe('performance model tests', function () {
+xdescribe('performance model tests', function () {
   var samplePerformance1, samplePerformance2, samplePerformances
-  var sandbox
+  var db, sandbox
 
   before(function (done) {
+    db = new Database(mysql, config)
     db.connect(done)
   })
 
@@ -45,37 +46,6 @@ describe('performance model tests', function () {
   })
 
   beforeEach(function (done) {
-    samplePerformance1 = {
-      title: 'Hamlet',
-      playwright: 'Porky',
-      director: 'Larry Director',
-      company: 'Electric Company',
-      venue: 'Super Dooper Venue',
-      music: 'Silent',
-      choreographer: 'Donald',
-      synopsis: 'A pig talks a lot but doesn\'t do anything.',
-      category: 'Breakfast',
-      image: 'https://virtualplaybill.s3.amazonaws.com/1454391209388_I_Want_to_Destroy_You',
-    }
-
-    samplePerformance1 = {
-      title: 'Hamlet2',
-      playwright: 'Pertunia',
-      director: 'Dan Director',
-      company: 'Threes Company',
-      venue: 'Alleooper Venue',
-      music: 'Loud',
-      choreographer: 'Flossy',
-      synopsis: 'A lady pig talks a lot and follows through.',
-      category: 'Brunch',
-      image: 'https://virtualplaybill.s3.amazonaws.com/1454391209388_I_Want_to_Destroy_You',
-    }
-
-    samplePerformances = [
-      samplePerformance1, samplePerformance2
-    ]
-
-    db.insert(samplePerformances, done)
     sandbox = sinon.sandbox.create()
   })
 
