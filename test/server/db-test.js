@@ -46,61 +46,72 @@ describe('Database', function () {
   })
 
   describe('connect', function () {
-    beforeEach(function () {
-      mysqlMock.expects('createConnection')
-                .withArgs(config)
-                .returns(connection)
+    describe('existing connection', function () {
+      it('should return an existing connection', function () {
+        var cb = function () {}
+        var testConnection = {foo: 'bar'}
+        db.connection = testConnection
+        expect(db.connect(cb)).to.be.eql(testConnection)
+      })
     })
 
-    afterEach(function () {
-      mysqlMock.verify()
-    })
+    describe('non existant connection', function () {
+      beforeEach(function () {
+        mysqlMock.expects('createConnection')
+                  .withArgs(config)
+                  .returns(connection)
+      })
 
-    it('should call mysql.createConnection', function () {
-      var cb = function () {}
+      afterEach(function () {
+        mysqlMock.verify()
+      })
 
-      db.connect(cb)
-    })
+      it('should call mysql.createConnection', function () {
+        var cb = function () {}
 
-    it('should call connection.connect() and pass a callback', function () {
-      var cb = function () { }
+        db.connect(cb)
+      })
 
-      db.connect(cb)
-      expect(connection.connect.called).to.be.true
-    })
+      it('should call connection.connect() and pass a callback', function () {
+        var cb = function () { }
 
-    it('should throw an error if it cannot connect', function (done) {
-      var cb = function (err) {
-        expect(err.message).to.be.eql('Cannot connect to the database.')
-        done()
-      }
+        db.connect(cb)
+        expect(connection.connect.called).to.be.true
+      })
 
-      db.connect(cb)
+      it('should throw an error if it cannot connect', function (done) {
+        var cb = function (err) {
+          expect(err.message).to.be.eql('Cannot connect to the database.')
+          done()
+        }
 
-      var registeredCallback = connection.connect.firstCall.args[0]
-      registeredCallback(new Error('Cannot connect to the database.'))
-    })
+        db.connect(cb)
 
-    it('should return a connection', function () {
-      var cb = function () { }
+        var registeredCallback = connection.connect.firstCall.args[0]
+        registeredCallback(new Error('Cannot connect to the database.'))
+      })
 
-      var result = db.connect(cb)
-      expect(result).to.be.eql(connection)
-    })
+      it('should return a connection', function () {
+        var cb = function () { }
 
-    it('should call connection.connect() and connection.query()', function (done) {
-      var cb = function () { done() }
-      db.connect(cb)
-      expect(connection.connect.called).to.be.true
+        var result = db.connect(cb)
+        expect(result).to.be.eql(connection)
+      })
 
-      var connectCallback = connection.connect.firstCall.args[0]
-      connectCallback()
+      it('should call connection.connect() and connection.query()', function (done) {
+        var cb = function () { done() }
+        db.connect(cb)
+        expect(connection.connect.called).to.be.true
 
-      var queryString = connection.query.firstCall.args[0]
-      expect(queryString).to.be.eql('USE ' + config.database)
+        var connectCallback = connection.connect.firstCall.args[0]
+        connectCallback()
 
-      var queryCallback = connection.query.firstCall.args[1]
-      queryCallback()
+        var queryString = connection.query.firstCall.args[0]
+        expect(queryString).to.be.eql('USE ' + config.database)
+
+        var queryCallback = connection.query.firstCall.args[1]
+        queryCallback()
+      })
     })
   })
 

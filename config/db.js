@@ -8,6 +8,7 @@ var Database = function (database, config) {
 
   this.connect = function (cb) {
     var self = this
+    if (self.connection) return self.connection
     self.connection = self.mysql.createConnection(self.config)
     self.connection.connect(function (err) {
       if (err) cb(err)
