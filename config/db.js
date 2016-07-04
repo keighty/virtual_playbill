@@ -77,13 +77,9 @@ var Database = function (database, config) {
 
   this.connect = function (cb) {
     var self = this
-    self.connection = self.mysql.createConnection(self.config, cb)
-    self.connection.connect(cb, function () {
-      self.connection.query('CREATE DATABASE IF NOT EXISTS ' + self.dbName, cb, function () {
-        self.connection.query('USE ' + self.dbName, cb)
-      })
-    })
-    return self.connection
+    self.connection = self.mysql.createConnection(self.config)
+    self.connection.connect(cb)
+    // return self.connection
   }
 }
 

@@ -8,7 +8,7 @@ var mysql = require('mysql')
 describe.only('Database', function () {
   var config, db, sandbox, connection, mysqlMock
 
-  before(function () {
+  beforeEach(function () {
     sandbox = sinon.sandbox.create()
     mysqlMock = sandbox.mock(mysql)
     config = {
@@ -18,12 +18,10 @@ describe.only('Database', function () {
         password: 'testPassword',
       }
     connection = {
-      connect: sandbox.spy(),
-      query: sandbox.spy()
+      connect: sinon.spy(),
+      query: function () {}
     }
-  })
 
-  beforeEach(function () {
     db = new Database(mysql, config)
   })
 
@@ -52,20 +50,39 @@ describe.only('Database', function () {
     it('should call mysql.createConnection', function () {
       var cb = function () {}
       mysqlMock.expects('createConnection')
-                .withArgs(config, cb)
+                .withArgs(config)
                 .returns(connection)
 
       db.connect(cb)
       mysqlMock.verify()
     })
 
-    //     var stockfetchmock = sandbox.mock(stockfetch)
-    // stockfetchmock.expects('getPrice').withArgs('A')
-    // stockfetchmock.expects('getPrice').withArgs('B')
-    // stockfetchmock.expects('getPrice').withArgs('C')
+    it('should call connection.connect() and pass a callback', function (done) {
+      var cb = function () { done() }
+      mysqlMock.expects('createConnection')
+                .withArgs(config)
+                .returns(connection)
 
-    // stockfetch.processTickers(['A', 'B', 'C'])
-    // stockfetchmock.verify()
+      db.connect(cb)
+      var registeredCallback = connection.connect.firstCall.args[0]
+      registeredCallback()
+    })
+
+    xit('should return a connection', function (done) {
+      var cb = function () { done() }
+      mysqlMock.expects('createConnection')
+                .withArgs(config)
+                .returns(connection)
+
+      var result = db.connect(cb)
+      // sandbox.stub(connection, 'connect', function (args) {
+      //   expect(args).to.be.eql(cb)
+      // })
+
+      // var result = db.connect(cb)
+      // expect(result).to.be.eql(connection)
+      // expect(db.connect(cb)).to.be.eql(connection)
+    })
 
     // xit('should connect to the database', function (done) {
     //   var callback = function (err) {
