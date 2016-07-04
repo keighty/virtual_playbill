@@ -1,52 +1,110 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var db = require('../../config/db')
-var schema = require('../helpers/test-schema')
-var SchemaParser = require('../../config/schema-parser')
+var Database = require('../../config/db')
+// var schema = require('../helpers/test-schema')
+// var SchemaParser = require('../../config/schema-parser')
+var mysql = require('mysql')
 
-describe('db tests', function () {
+describe.only('Database', function () {
+  var config, db, sandbox, connection, mysqlMock
+
+  before(function () {
+    sandbox = sinon.sandbox.create()
+    mysqlMock = sandbox.mock(mysql)
+    config = {
+        database: 'testDB',
+        host: 'localhost',
+        user: 'testUser',
+        password: 'testPassword',
+      }
+    connection = {
+      connect: sandbox.spy(),
+      query: sandbox.spy()
+    }
+  })
+
+  beforeEach(function () {
+    db = new Database(mysql, config)
+  })
+
+  afterEach(function () {
+    sandbox.restore()
+    mysqlMock.restore()
+  })
+
   it('should pass this canary test', function () {
     expect(true).to.be.true
   })
 
-  it('should return a db object with a config', function () {
-    var expectedConfig = {
-      database: 'virtual_playbill',
-      host: 'localhost',
-      user: 'testvp',
-      password: process.env.MYSQL_TESTVP_PASSWORD,
-    }
-
-    expect(db.config).to.be.eql(expectedConfig)
+  it('should take a config', function () {
+    expect(db.config).to.be.eql(config)
   })
 
-  it('get should return null connection by default', function () {
-    expect(db.get()).to.be.null
+  it('should take a database module', function () {
+    expect(db.mysql).to.be.eql(mysql)
   })
 
-  it('close should set the existing connection to null', function () {
+  describe('connect', function () {
+    it('connection should be null by default', function () {
+      expect(db.connection).to.be.null
+    })
+
+    it('should call mysql.createConnection', function () {
+      var cb = function () {}
+      mysqlMock.expects('createConnection')
+                .withArgs(config, cb)
+                .returns(connection)
+
+      db.connect(cb)
+      mysqlMock.verify()
+    })
+
+    //     var stockfetchmock = sandbox.mock(stockfetch)
+    // stockfetchmock.expects('getPrice').withArgs('A')
+    // stockfetchmock.expects('getPrice').withArgs('B')
+    // stockfetchmock.expects('getPrice').withArgs('C')
+
+    // stockfetch.processTickers(['A', 'B', 'C'])
+    // stockfetchmock.verify()
+
+    // xit('should connect to the database', function (done) {
+    //   var callback = function (err) {
+    //     expect(err).to.be.null
+    //     expect(db.connection).to.be.eql(connection)
+    //   }
+
+    //   db.connect(callback)
+    // })
+  //   xit('connect should set connection', function (done) {
+    //   var callback = function (err) {
+    //     expect(err).to.be.null
+    //     expect(db.get().config.database).to.be.eql('virtual_playbill')
+    //     db.close()
+    //     done()
+    //   }
+
+    //   db.connect(callback)
+    // })
+
+    xit('should perform queries on the database', function () {})
+    xit('should throw a sql error if the query cannot be performed', function () {})
+    xit('should throw an error if it cannot connect', function () {})
+  })
+
+
+  xit('close should set the existing connection to null', function () {
     db.close()
     expect(db.connection).to.be.null
   })
 
-  it('close should close the existing connection', function (done) {
+  xit('close should close the existing connection', function (done) {
     db.connection = { end: function () { done() }}
     db.close()
     expect(db.connection).to.be.null
   })
 
-  it('connect should set connection', function (done) {
-    var callback = function (err) {
-      expect(err).to.be.null
-      expect(db.get().config.database).to.be.eql('virtual_playbill')
-      db.close()
-      done()
-    }
 
-    db.connect(callback)
-  })
-
-  describe('Create a database', function () {
+  xdescribe('Create a database', function () {
     var sandbox, schemaParser, result, onError, basicQuery
 
     before(function () {
@@ -122,7 +180,7 @@ describe('db tests', function () {
     xit('createTable should successfully create a database table', function () {})
   })
 
-  describe('Drop a table', function () {
+  xdescribe('Drop a table', function () {
     var sandbox, onError
 
     before(function () {
