@@ -6,10 +6,11 @@ module.exports = {
   db: db,
 
   all: function (cb) {
-    var connection = db.connect(cb)
     var query = 'SELECT * from performance;'
-
-    connection.query(query, cb)
+    db.connect(function (err) {
+      if (err) cb(err)
+      else db.query(query, cb)
+    })
   },
 
   get: function (performanceId, cb) {
