@@ -142,7 +142,7 @@ describe('performance model', function () {
     })
   })
 
-  describe.only('#add', function () {
+  describe('#add', function () {
     var testPerformance = {
       title: 'foo',
       director: 'bar',
