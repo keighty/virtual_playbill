@@ -1,155 +1,186 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var db = require('../../config/db')
-var schema = require('../helpers/test-schema')
-var SchemaParser = require('../../config/schema-parser')
+var Database = require('../../config/db')
+var mysql = require('mysql')
 
-describe('db tests', function () {
+describe('Database', function () {
+  var config, db, sandbox, connection, mysqlMock
+
+  beforeEach(function () {
+    sandbox = sinon.sandbox.create()
+    mysqlMock = sandbox.mock(mysql)
+    config = {
+        database: 'testDB',
+        host: 'localhost',
+        user: 'testUser',
+        password: 'testPassword',
+      }
+    connection = {
+      connect: sinon.spy(),
+      query: sinon.spy(),
+      end: sinon.spy()
+    }
+
+    db = new Database(mysql, config)
+  })
+
+  afterEach(function () {
+    sandbox.restore()
+    mysqlMock.restore()
+  })
+
   it('should pass this canary test', function () {
     expect(true).to.be.true
   })
 
-  it('should return a db object with a config', function () {
-    var expectedConfig = {
-      database: 'virtual_playbill',
-      host: 'localhost',
-      user: 'testvp',
-      password: process.env.MYSQL_TESTVP_PASSWORD,
-    }
-
-    expect(db.config).to.be.eql(expectedConfig)
+  it('should take a config', function () {
+    expect(db.config).to.be.eql(config)
   })
 
-  it('get should return null connection by default', function () {
-    expect(db.get()).to.be.null
+  it('should take a database module', function () {
+    expect(db.mysql).to.be.eql(mysql)
   })
 
-  it('close should set the existing connection to null', function () {
-    db.close()
+  it('connection should be null by default', function () {
     expect(db.connection).to.be.null
   })
 
-  it('close should close the existing connection', function (done) {
-    db.connection = { end: function () { done() }}
-    db.close()
-    expect(db.connection).to.be.null
-  })
-
-  it('connect should set connection', function (done) {
-    var callback = function (err) {
-      expect(err).to.be.null
-      expect(db.get().config.database).to.be.eql('virtual_playbill')
-      db.close()
-      done()
-    }
-
-    db.connect(callback)
-  })
-
-  describe('Create a database', function () {
-    var sandbox, schemaParser, result, onError, basicQuery
-
-    before(function () {
-      schemaParser = new SchemaParser()
-      result = schemaParser.parseSchema(schema)
-      onError = function (err) { if (err) throw err }
-      basicQuery = 'CREATE TABLE IF NOT EXISTS foo (id INT AUTO_INCREMENT NOT NULL, PRIMARY KEY (id));'
+  describe('connect', function () {
+    describe('existing connection', function () {
+      it('should return an existing connection', function () {
+        var cb = function () {}
+        var testConnection = {foo: 'bar'}
+        db.connection = testConnection
+        expect(db.connect(cb)).to.be.eql(testConnection)
+      })
     })
 
-    beforeEach(function () {
-      sandbox = sinon.sandbox.create()
-      db.connect(onError)
-    })
-
-    afterEach(function () {
-      sandbox.restore()
-      db.close()
-    })
-
-    it('should parse a given schema', function (done) {
-      sandbox.stub(db, 'getSchemas', function (data) {
-        expect(data).to.be.eql(schema)
-        done()
-        return []
+    describe('non existant connection', function () {
+      beforeEach(function () {
+        mysqlMock.expects('createConnection')
+                  .withArgs(config)
+                  .returns(connection)
       })
 
-      db.createDatabase(schema)
-    })
-
-    it('getSchemas should return an array of table schemas', function () {
-      expect(db.getSchemas(schema)).to.be.eql(result)
-    })
-
-    it('should call createTable for each table schema', function () {
-      var dbMock = sandbox.mock(db)
-      dbMock.expects('createTable').withArgs(result[0])
-      dbMock.expects('createTable').withArgs(result[1])
-
-      db.createDatabase(schema)
-      dbMock.verify()
-    })
-
-    it('createTable should grab the existing database connection', function (done) {
-      sandbox.stub(db, 'get', function () {
-        done()
+      afterEach(function () {
+        mysqlMock.verify()
       })
 
-      db.createTable(basicQuery)
-    })
+      it('should call mysql.createConnection', function () {
+        var cb = function () {}
 
-    it('createTable should get a new Connection if there is not one available', function (done) {
-      sandbox.stub(db, 'get').returns(null)
-      sandbox.stub(db, 'connect', function () {
-        done()
+        db.connect(cb)
       })
 
-      db.createTable(basicQuery)
-    })
+      it('should call connection.connect() and pass a callback', function () {
+        var cb = function () { }
 
-    xit('createTable should send the table schema and an onError callback', function (done) {
-      var connect = {
-        query: function (schema, cb) {
+        db.connect(cb)
+        expect(connection.connect.called).to.be.true
+      })
+
+      it('should throw an error if it cannot connect', function (done) {
+        var cb = function (err) {
+          expect(err.message).to.be.eql('Cannot connect to the database.')
           done()
         }
-      }
 
-      sandbox.stub(db, 'get').returns(connect)
+        db.connect(cb)
 
-      db.createTable(basicQuery)
+        var registeredCallback = connection.connect.firstCall.args[0]
+        registeredCallback(new Error('Cannot connect to the database.'))
+      })
+
+      it('should return a connection', function () {
+        var cb = function () { }
+
+        var result = db.connect(cb)
+        expect(result).to.be.eql(connection)
+      })
+
+      it('should call connection.connect() and connection.query()', function (done) {
+        var cb = function () { done() }
+        db.connect(cb)
+        expect(connection.connect.called).to.be.true
+
+        var connectCallback = connection.connect.firstCall.args[0]
+        connectCallback()
+
+        var queryString = connection.query.firstCall.args[0]
+        expect(queryString).to.be.eql('USE ' + config.database)
+
+        var queryCallback = connection.query.firstCall.args[1]
+        queryCallback()
+      })
     })
-
-    xit('createTable should report sql errors', function () {})
-    xit('createTable should successfully create a database table', function () {})
   })
 
-  describe('Drop a table', function () {
-    var sandbox, onError
-
-    before(function () {
-      onError = function (err) { if (err) throw err }
-    })
+  describe('query', function () {
+    var testSql
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create()
-      db.connect(onError)
+      db.connection = connection
+      testSql = 'Select * from foo;'
     })
 
-    afterEach(function () {
-      sandbox.restore()
-      db.close()
-    })
-
-    xit('should drop a table', function (done) {
-    })
-
-    xit('dropTable should throw an error for an invalid table name', function () {
-      var cb = function (err, data) {}
-
+    it('should throw an error if there is no connection', function () {
+      db.connection = null
       var call = function () {
-        db.dropTable('undefinedTableName', cb)
+        db.query(testSql)
       }
 
-      expect(call).to.throw(Error, 'ER_BAD_TABLE_ERROR: Unknown table \'virtual_playbill.undefinedtablename\'')
+      expect(call).to.throw(Error, 'Bad connection')
+    })
+
+    it('should call connection.query()', function () {
+      db.query(testSql)
+
+      expect(connection.query.called).to.be.true
+    })
+
+    it('should register a callback', function (done) {
+      var cb = function (err, data) {
+        done()
+      }
+
+      db.query(testSql, cb)
+      var registeredCallback = connection.query.firstCall.args[1]
+      registeredCallback()
+    })
+
+    it('should throw a sql error if the query cannot be performed', function (done) {
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql('Cannot perform the query')
+        done()
+      }
+
+      db.query(testSql, cb)
+      var registeredCallback = connection.query.firstCall.args[1]
+      registeredCallback(new Error('Cannot perform the query'))
+    })
+  })
+
+  describe('close', function () {
+    beforeEach(function () {
+      db.connection = connection
+    })
+
+    it('should call connection.end() if there is an existing connection', function () {
+      db.close()
+      expect(connection.end.called).to.be.true
+    })
+
+    it('should not throw an error if there is no existing connection', function () {
+      db.connection = null
+      var call = function () {
+        db.close()
+      }
+      expect(call).to.not.throw(Error, 'TypeError: Cannot read property \'end\' of null')
+    })
+
+    it('should set the connection to null', function () {
+      db.close()
+      expect(db.connection).to.be.null
     })
   })
 })

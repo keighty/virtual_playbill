@@ -7,6 +7,7 @@
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
     "test": "multi='mocha-osx-reporter=- spec=-' mocha --reporter mocha-multi --watch --recursive test",
+    "cover": "node_modules/istanbul/lib/cli.js cover _mocha -- --recursive test/server",
     "precommit": "eslint .; mocha --recursive test"
   },
   "dependencies": {

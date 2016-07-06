@@ -1,86 +1,18 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var db = require('../../../config/db')
 var performance = require('../../../models/performance')
+var Database = require('../../../config/db')
 
-var existingData = [
-  {
-    category: "test category",
-    choreographer: "test choreo",
-    company: "test company",
-    director: "test director",
-    id: 1,
-    image: "https://virtualplaybill.s3.amazonaws.com/1455412796794_Baba_Yaga",
-    music: "test music",
-    playwright: "test author",
-    synopsis: "test synopsis -- morning is wiser than evening",
-    title: "Baba Yaga",
-    venue: "Fertile Ground Festival Venue"
-  },
-  {
-    category: "test category",
-    choreographer: "test choreo",
-    company: "test company",
-    director: "test director",
-    id: 2,
-    image: "https://virtualplaybill.s3.amazonaws.com/1455413120510_Buried_Fire",
-    music: "test music",
-    playwright: "test author",
-    synopsis: "test synopsis -- chicken pot pie",
-    title: "Buried Fire",
-    venue: "Fertile Ground Festival Venue"
-  }
-]
+describe('performance model', function () {
+  var mockConnect, sandbox, connection
 
-describe('performance model tests', function () {
-  var samplePerformance1, samplePerformance2, samplePerformances
-  var sandbox
-
-  before(function (done) {
-    db.connect(done)
-  })
-
-  after(function () {
-    db.close()
-  })
-
-  beforeEach(function (done) {
-    samplePerformance1 = {
-      title: 'Hamlet',
-      playwright: 'Porky',
-      director: 'Larry Director',
-      company: 'Electric Company',
-      venue: 'Super Dooper Venue',
-      music: 'Silent',
-      choreographer: 'Donald',
-      synopsis: 'A pig talks a lot but doesn\'t do anything.',
-      category: 'Breakfast',
-      image: 'https://virtualplaybill.s3.amazonaws.com/1454391209388_I_Want_to_Destroy_You',
-    }
-
-    samplePerformance1 = {
-      title: 'Hamlet2',
-      playwright: 'Pertunia',
-      director: 'Dan Director',
-      company: 'Threes Company',
-      venue: 'Alleooper Venue',
-      music: 'Loud',
-      choreographer: 'Flossy',
-      synopsis: 'A lady pig talks a lot and follows through.',
-      category: 'Brunch',
-      image: 'https://virtualplaybill.s3.amazonaws.com/1454391209388_I_Want_to_Destroy_You',
-    }
-
-    samplePerformances = [
-      samplePerformance1, samplePerformance2
-    ]
-
-    db.insert(samplePerformances, done)
+  beforeEach(function () {
     sandbox = sinon.sandbox.create()
+    mockConnect = performance.db.connect = sandbox.spy()
+    mockQuery = performance.db.query = sandbox.spy()
   })
 
-  afterEach(function (done) {
-    db.drop('performance', done)
+  afterEach(function () {
     sandbox.restore()
   })
 
@@ -88,28 +20,234 @@ describe('performance model tests', function () {
     expect(true).to.be.true
   })
 
-  it('all should return all the performances', function (done) {
-    var cb = function (err, performances) {
-      expect(performances).to.be.eql(existingData)
-      done()
-    }
+  describe('#all', function () {
+    it('should call connect', function () {
+      performance.all()
 
-    performance.all(cb)
+      expect(mockConnect.called).to.be.true
+    })
+
+    it('should handle a connection error', function (done) {
+      var cb = function (err) {
+        expect(err.message).to.be.eql('Could not connect')
+        done()
+      }
+
+      performance.all(cb)
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback(new Error('Could not connect'))
+    })
+
+    it('should call query', function () {
+      var cb = function () {}
+      performance.all()
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      expect(mockQuery.called).to.be.true
+    })
+
+    it('should return all performances', function (done) {
+      var testData = [
+        {id: 1, foo: 'bar'},
+        {id: 2, foo: 'baz'}
+      ]
+      var cb = function (err, data) {
+        expect(data).to.be.eql(testData)
+        done()
+      }
+      performance.all(cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(null, testData)
+    })
+
+    it('should handle query errors', function (done) {
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql('Bad query')
+        done()
+      }
+      performance.all(cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(new Error('Bad query'))
+    })
   })
 
-  xit('all should throw a sql error if the records can\'t be found', function (done) {})
+  describe('#get', function () {
+    it('should call connect', function () {
+      performance.get()
 
-  it('get should return a performance with a given id', function (done) {
-    var cb = function (err, performance) {
-      performance = performance[0]
-      actual = existingData[0]
+      expect(mockConnect.called).to.be.true
+    })
 
-      expect(performance.title).to.be.eql(actual.title)
-      expect(performance.playwrite).to.be.eql(actual.playwrite)
-      done()
+    it('should handle a connection error', function (done) {
+      var cb = function (err) {
+        expect(err.message).to.be.eql('Could not connect')
+        done()
+      }
+
+      performance.get(1, cb)
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback(new Error('Could not connect'))
+    })
+
+    it('should call query', function () {
+      var cb = function () {}
+      performance.get(1)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      expect(mockQuery.called).to.be.true
+    })
+
+    it('should return a specific performance', function (done) {
+      var testData = [
+        {id: 1, foo: 'bar'},
+        {id: 2, foo: 'baz'}
+      ]
+      var cb = function (err, data) {
+        expect(data).to.be.eql([testData[0]])
+        done()
+      }
+      performance.get(1, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(null, [testData[0]])
+    })
+
+    it('should handle query errors', function (done) {
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql('Bad query')
+        done()
+      }
+      performance.get(1, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(new Error('Bad query'))
+    })
+  })
+
+  describe('#add', function () {
+    var testPerformance = {
+      title: 'foo',
+      director: 'bar',
+      venue: 'baz',
+      choreographer: 'crunchy',
+      category: 'bacon'
     }
 
-    performance.get(1, cb)
+    it('should call connect', function () {
+      performance.add(testPerformance)
+
+      expect(mockConnect.called).to.be.true
+    })
+
+    it('should handle a connection error', function (done) {
+      var cb = function (err) {
+        expect(err.message).to.be.eql('Could not connect')
+        done()
+      }
+
+      performance.add(testPerformance, cb)
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback(new Error('Could not connect'))
+    })
+
+    it('should call query', function () {
+      var cb = function () {}
+      performance.add(testPerformance)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      expect(mockQuery.called).to.be.true
+    })
+
+    it('should return a specific performance', function (done) {
+      var cb = function (err, data) {
+        expect(data).to.be.eql('success')
+        done()
+      }
+      performance.add(testPerformance, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(null, 'success')
+    })
+
+    it('should handle query errors', function (done) {
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql('Bad query')
+        done()
+      }
+      performance.add(testPerformance, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(new Error('Bad query'))
+    })
   })
+
+  describe('#delete', function () {
+    it('should call connect', function () {
+      performance.delete(1)
+
+      expect(mockConnect.called).to.be.true
+    })
+
+    it('should handle a connection error', function (done) {
+      var cb = function (err) {
+        expect(err.message).to.be.eql('Could not connect')
+        done()
+      }
+
+      performance.delete(1, cb)
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback(new Error('Could not connect'))
+    })
+
+    it('should call query', function () {
+      var cb = function () {}
+      performance.delete(1, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      expect(mockQuery.called).to.be.true
+    })
+
+    it('should handle query errors', function (done) {
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql('Bad query')
+        done()
+      }
+      performance.delete(1, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(new Error('Bad query'))
+    })
+  })
+
 })
-
