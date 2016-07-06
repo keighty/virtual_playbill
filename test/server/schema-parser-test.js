@@ -1,6 +1,6 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var SchemaParser = require('../../config/schema-parser.js')
+var SchemaParser = require('../../lib/schema-parser.js')
 var testSchema = require('../helpers/test-schema')
 
 describe('SchemaParser tests', function () {
