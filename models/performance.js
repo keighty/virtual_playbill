@@ -44,5 +44,12 @@ module.exports = {
     })
   },
 
-  delete: function () {}
+  delete: function (performanceId, cb) {
+    var query = 'DELETE FROM performance WHERE ID=' + performanceId
+
+    db.connect(function (err) {
+      if (err) cb(err)
+      else db.query(query, cb)
+    })
+  }
 }

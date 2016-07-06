@@ -207,4 +207,47 @@ describe('performance model', function () {
     })
   })
 
+  describe('#delete', function () {
+    it('should call connect', function () {
+      performance.delete(1)
+
+      expect(mockConnect.called).to.be.true
+    })
+
+    it('should handle a connection error', function (done) {
+      var cb = function (err) {
+        expect(err.message).to.be.eql('Could not connect')
+        done()
+      }
+
+      performance.delete(1, cb)
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback(new Error('Could not connect'))
+    })
+
+    it('should call query', function () {
+      var cb = function () {}
+      performance.delete(1, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      expect(mockQuery.called).to.be.true
+    })
+
+    it('should handle query errors', function (done) {
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql('Bad query')
+        done()
+      }
+      performance.delete(1, cb)
+
+      var registeredCallback = mockConnect.firstCall.args[0]
+      registeredCallback()
+
+      var registeredQueryCallback = mockQuery.firstCall.args[1]
+      registeredQueryCallback(new Error('Bad query'))
+    })
+  })
+
 })
