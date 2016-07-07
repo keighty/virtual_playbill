@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 var onError = function (err) { if (err) throw err; }
-var connection = require('../config/db').connect(onError)
+// var connection = require('../config/db').connect(onError)
 
 router.get('/:performerId', function (req, res, next) {
   var performerId = req.params.performerId
