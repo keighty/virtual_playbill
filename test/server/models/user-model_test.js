@@ -3,7 +3,7 @@ var sinon = require('sinon')
 var user = require('../../../models/user')
 var Database = require('../../../config/db')
 
-describe.only('user model', function () {
+describe('user model', function () {
   var mockConnect, sandbox
 
   var testData = [

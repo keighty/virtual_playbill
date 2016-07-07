@@ -4,7 +4,15 @@ var performance = require('../../../models/performance')
 var Database = require('../../../config/db')
 
 describe('performance model', function () {
-  var mockConnect, sandbox, connection
+  var mockConnect, sandbox
+
+  var testPerformance = {
+    title: 'foo',
+    director: 'bar',
+    venue: 'baz',
+    choreographer: 'crunchy',
+    category: 'bacon'
+  }
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create()
@@ -143,14 +151,6 @@ describe('performance model', function () {
   })
 
   describe('#add', function () {
-    var testPerformance = {
-      title: 'foo',
-      director: 'bar',
-      venue: 'baz',
-      choreographer: 'crunchy',
-      category: 'bacon'
-    }
-
     it('should call connect', function () {
       performance.add(testPerformance)
 
@@ -249,5 +249,4 @@ describe('performance model', function () {
       registeredQueryCallback(new Error('Bad query'))
     })
   })
-
 })

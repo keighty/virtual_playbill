@@ -1,12 +1,14 @@
 var Database = require('../config/db')
 var db = new Database()
 var tableName = 'performance'
+var query
 
 module.exports = {
   db: db,
 
   all: function (cb) {
-    var query = 'SELECT * from performance;'
+    query = ['SELECT * from', tableName, ';'].join(' ')
+
 
     db.connect(function (err) {
       if (err) cb(err)
@@ -14,8 +16,8 @@ module.exports = {
     })
   },
 
-  get: function (performanceId, cb) {
-    var query = 'SELECT * FROM performance WHERE ID=' + performanceId
+  get: function (id, cb) {
+    query = ['SELECT * from', tableName, 'WHERE id =', id, ';'].join(' ')
 
     db.connect(function (err) {
       if (err) cb(err)
@@ -36,7 +38,7 @@ module.exports = {
       performance.category,
       performance.image
     ].join(',')
-    var query = 'INSERT into performance VALUES (null, list)'.replace(/list/, values)
+    query = ['INSERT into', tableName, 'VALUES (null,', values, ');'].join(' ')
 
     db.connect(function (err) {
       if (err) cb(err)
@@ -44,8 +46,8 @@ module.exports = {
     })
   },
 
-  delete: function (performanceId, cb) {
-    var query = 'DELETE FROM performance WHERE ID=' + performanceId
+  delete: function (id, cb) {
+    query = ['DELETE FROM', tableName, 'WHERE ID=', id, ';'].join(' ')
 
     db.connect(function (err) {
       if (err) cb(err)
