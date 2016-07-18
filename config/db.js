@@ -1,9 +1,6 @@
-var mysql = require('mysql')
-var dbconfig = require('./db-config')
-
 var Database = function (database, config) {
-  this.mysql = database || mysql
-  this.config = config || dbconfig
+  this.mysql = database || require('mysql')
+  this.config = config || require('./db-config')
   this.connection = null
 
   this.connect = function (cb) {
@@ -21,6 +18,7 @@ var Database = function (database, config) {
 
   this.query = function (sql, cb) {
     var self = this
+    console.log('in the query with: ' + sql)
     if (self.connection) self.connection.query(sql, cb)
     else throw new Error('Bad connection')
   }

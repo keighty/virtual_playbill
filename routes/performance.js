@@ -1,7 +1,6 @@
 var express = require('express')
 var performance = require('../models/performance')
 var router = express.Router()
-var onError = function (err) { if (err) throw err; }
 
 router.get('/', function (req, res, next) {
   performance.all(function (err, performances) {

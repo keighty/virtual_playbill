@@ -3,25 +3,27 @@ var db = new Database()
 var tableName = 'user'
 var query
 
+function performQuery (query, cb) {
+  db.connect(function (err) {
+    if (err) cb(err)
+    else db.query(query, function (err, data) {
+      cb(err, data)
+      db.close()
+    })
+  })
+}
+
 module.exports = {
   db: db,
 
   all: function (cb) {
     query = ['SELECT * from', tableName, ';'].join(' ')
-
-    db.connect(function (err) {
-      if (err) cb(err)
-      else db.query(query, cb)
-    })
+    performQuery(query, cb)
   },
 
   get: function (id, cb) {
     query = ['SELECT * from', tableName, 'WHERE id =', id, ';'].join(' ')
-
-    db.connect(function (err) {
-      if (err) cb(err)
-      else db.query(query, cb)
-    })
+    performQuery(query, cb)
   },
 
   add: function (user, cb) {
@@ -30,19 +32,11 @@ module.exports = {
       user.l_name
     ].join(', ')
     query = ['INSERT into', tableName, 'VALUES (null,', values, ');'].join(' ')
-
-    db.connect(function (err) {
-      if (err) cb(err)
-      else db.query(query, cb)
-    })
+    performQuery(query, cb)
   },
 
   delete: function (id, cb) {
     query = ['DELETE FROM', tableName, 'WHERE ID=', id, ';'].join(' ')
-
-    db.connect(function (err) {
-      if (err) cb(err)
-      else db.query(query, cb)
-    })
+    performQuery(query, cb)
   }
 }
