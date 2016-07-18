@@ -1,6 +1,6 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var Database = require('../../config/db')
+var Database = require('../../../config/db')
 var mysql = require('mysql')
 
 describe('Database', function () {

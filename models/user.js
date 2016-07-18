@@ -1,21 +1,8 @@
-var Database = require('../config/db')
-var db = new Database()
+var performQuery = require('../config/perform-query')
 var tableName = 'user'
 var query
 
-function performQuery (query, cb) {
-  db.connect(function (err) {
-    if (err) cb(err)
-    else db.query(query, function (err, data) {
-      cb(err, data)
-      db.close()
-    })
-  })
-}
-
 module.exports = {
-  db: db,
-
   all: function (cb) {
     query = ['SELECT * from', tableName, ';'].join(' ')
     performQuery(query, cb)
