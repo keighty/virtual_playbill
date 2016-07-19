@@ -18,7 +18,6 @@ var Database = function (database, config) {
 
   this.query = function (sql, cb) {
     var self = this
-    console.log('in the query with: ' + sql)
     if (self.connection) self.connection.query(sql, cb)
     else throw new Error('Bad connection')
   }
@@ -28,6 +27,17 @@ var Database = function (database, config) {
       this.connection.end()
       this.connection = null
     }
+  }
+
+  this.performQuery = function (query, cb) {
+    var self = this
+    self.connect(function (err) {
+      if (err) cb(err)
+      else self.query(query, function (err, data) {
+        cb(err, data)
+        self.close()
+      })
+    })
   }
 }
 

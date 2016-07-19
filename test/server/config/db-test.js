@@ -183,4 +183,61 @@ describe('Database', function () {
       expect(db.connection).to.be.null
     })
   })
+
+  describe.only('performQuery', function () {
+    var query
+
+    beforeEach (function () {
+      mysqlMock.expects('createConnection')
+          .withArgs(config)
+          .returns(connection)
+      query = 'SELECT * FROM foo;'
+    })
+
+    it('should call connect', function () {
+      var dbConnectMock = sandbox.mock(db)
+      var cb = function () {}
+
+      dbConnectMock.expects('connect')
+      db.performQuery(query, cb)
+      dbConnectMock.verify()
+    })
+
+    it('should handle a connection error', function (done) {
+      var cb = function (err) {
+        expect(err.message).to.be.eql('Cannot connect to the database.')
+        done()
+      }
+
+      db.performQuery(query, cb)
+
+      var registeredCallback = connection.connect.firstCall.args[0]
+      registeredCallback(new Error('Cannot connect to the database.'))
+      mysqlMock.verify()
+    })
+
+    it('should call query', function (done) {
+      var cb = function () { done() }
+
+      db.performQuery(query,cb)
+      expect(connection.connect.called).to.be.true
+
+      var connectCallback = connection.connect.firstCall.args[0]
+      connectCallback()
+
+      var queryString = connection.query.firstCall.args[0]
+      expect(queryString).to.be.eql('USE ' + config.database)
+
+      var queryCallback = connection.query.firstCall.args[1]
+      queryCallback()
+
+      queryString = connection.query.secondCall.args[0]
+      expect(queryString).to.be.eql(query)
+      var queryCallback = connection.query.secondCall.args[1]
+      queryCallback()
+    })
+
+    xit('should pass data to the callback', function (done) {
+    })
+  })
 })
