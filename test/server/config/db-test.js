@@ -184,7 +184,7 @@ describe('Database', function () {
     })
   })
 
-  describe.only('performQuery', function () {
+  describe('performQuery', function () {
     var query
 
     beforeEach (function () {
@@ -237,7 +237,41 @@ describe('Database', function () {
       queryCallback()
     })
 
-    xit('should pass data to the callback', function (done) {
+    it('should pass data to the callback', function (done) {
+      var testdata = [{foo: 'bar'}, {foo: 'baz'}]
+      var cb = function (err, data) {
+        expect(err).to.be.null
+        expect(data).to.be.eql(testdata)
+        done()
+      }
+
+      db.performQuery(query,cb)
+      expect(connection.connect.called).to.be.true
+      var connectCallback = connection.connect.firstCall.args[0]
+      connectCallback()
+      var queryCallback = connection.query.firstCall.args[1]
+      queryCallback()
+
+      var queryCallback = connection.query.secondCall.args[1]
+      queryCallback(null, testdata)
+    })
+
+    it('should pass sql errors to the callback', function (done) {
+      var errMessage = 'Sql error'
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql(errMessage)
+        done()
+      }
+
+      db.performQuery(query,cb)
+      expect(connection.connect.called).to.be.true
+      var connectCallback = connection.connect.firstCall.args[0]
+      connectCallback()
+      var queryCallback = connection.query.firstCall.args[1]
+      queryCallback()
+
+      var queryCallback = connection.query.secondCall.args[1]
+      queryCallback(new Error('Sql error'))
     })
   })
 })
