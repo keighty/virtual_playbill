@@ -1,5 +1,6 @@
 var Database = require('../config/db')
 var db = new Database()
+var schema = require('../config/schema')
 var tableName = 'performance'
 var query
 

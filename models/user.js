@@ -18,10 +18,7 @@ module.exports = {
   },
 
   add: function (user, cb) {
-    var colNames = schema.getKeys(tableName)
-    var values = colNames.slice(1).map(function (col) {
-      return user[col]
-    }).join(',')
+    var values = schema.getTableValues(tableName, user)
 
     query = ['INSERT into', tableName, 'VALUES (null,', values, ');'].join(' ')
     this.db.performQuery(query, cb)
