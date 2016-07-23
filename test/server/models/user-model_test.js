@@ -90,8 +90,8 @@ describe('user model', function () {
 
   describe('#add', function () {
     var testUser = {
-      f_name: 'foo',
-      l_name: 'bar'
+      fName: 'foo',
+      lName: 'bar'
     }
 
     it('should call performQuery', function () {

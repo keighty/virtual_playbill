@@ -1,4 +1,5 @@
 var Database = require('../config/db')
+var schema = require('../config/schema')
 var database = new Database()
 var tableName = 'user'
 var query
@@ -17,10 +18,11 @@ module.exports = {
   },
 
   add: function (user, cb) {
-    var values = [
-      user.f_name,
-      user.l_name
-    ].join(', ')
+    var colNames = schema.getKeys(tableName)
+    var values = colNames.slice(1).map(function (col) {
+      return user[col]
+    }).join(',')
+
     query = ['INSERT into', tableName, 'VALUES (null,', values, ');'].join(' ')
     this.db.performQuery(query, cb)
   },

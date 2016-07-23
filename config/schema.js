@@ -1,4 +1,4 @@
-var users = {
+var user = {
   name: 'user',
   columns: {
     id: { type: 'int', nonNullable: true, auto: true },
@@ -64,13 +64,20 @@ var performerPerformance = {
   ]
 }
 
-module.exports = {
-  users,
+var getKeys = function (schemaName) {
+  return Object.keys(tableList[schemaName].columns)
+}
+
+var tableList = {
+  getKeys,
+  user,
   performance,
   userPerformance,
   performer,
   performerPerformance
 }
+
+module.exports = tableList
 
 // var SchemaParser = require('./schema-parser')
 // var sp = new SchemaParser()
