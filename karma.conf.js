@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Mon May 09 2016 21:03:57 GMT-0700 (PDT)
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -17,7 +17,7 @@ module.exports = function(config) {
     files: [
         './test/client/**/*.js',
         // './public/javascripts/*.js',
-        './src/**/*.js'
+        './src/**/*.js',
     ],
 
 
@@ -29,7 +29,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './public/javascripts/src/*.js': 'coverage'
+      './public/javascripts/src/*.js': 'coverage',
     },
 
 
@@ -67,6 +67,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: Infinity,
   })
 }

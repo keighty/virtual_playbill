@@ -12,7 +12,7 @@ describe('user routes', function () {
     sandbox.stub(express, 'Router').returns({
       get: sandbox.spy(),
       post: sandbox.spy(),
-      delete: sandbox.spy()
+      delete: sandbox.spy(),
     })
 
     router = require('../../../routes/user')
@@ -27,7 +27,7 @@ describe('user routes', function () {
       send: function (data) {
         expect(data).to.be.eql(expected)
         done()
-      }
+      },
     }
   }
 

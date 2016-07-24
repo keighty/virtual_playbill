@@ -27,5 +27,5 @@ module.exports = {
   delete: function (id, cb) {
     query = ['DELETE FROM', tableName, 'WHERE ID=', id, ';'].join(' ')
     this.db.performQuery(query, cb)
-  }
+  },
 }

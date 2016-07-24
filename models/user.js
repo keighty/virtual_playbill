@@ -36,8 +36,8 @@ module.exports = {
       'JOIN performance',
       'ON performance.id = performer_performance.performance_id',
       'WHERE performer_id =',
-      id
+      id,
     ].join(' ')
     this.db.performQuery(query, cb)
-  }
+  },
 }

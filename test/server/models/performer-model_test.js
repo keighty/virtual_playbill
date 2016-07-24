@@ -8,13 +8,13 @@ describe('performer model', function () {
 
   var testData = [
     {id: 1, foo: 'bar'},
-    {id: 2, foo: 'baz'}
+    {id: 2, foo: 'baz'},
   ]
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create()
     mockDb = {
-      performQuery: sandbox.spy()
+      performQuery: sandbox.spy(),
     }
     performer.db = mockDb
   })
@@ -91,7 +91,7 @@ describe('performer model', function () {
   describe('#add', function () {
     var testPerformer = {
       fName: 'foo',
-      lName: 'bar'
+      lName: 'bar',
     }
 
     it('should call performQuery', function () {

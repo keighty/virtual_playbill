@@ -3,6 +3,14 @@
     "jQuery": true,
     "$": true
   },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+        "jsx": true,
+        "experimentalObjectRestSpread": true,
+    }
+  },
   "env": {
     "browser": true,
     "node": true
@@ -14,6 +22,6 @@
     "comma-spacing": [2, {"before": false, "after": true}],
     "space-before-function-paren": [2, "always"],
     "comma-dangle": [2, "always-multiline"],
-    "object-shorthand": [2, "never"]
+    "object-shorthand": [2, "properties"]
   }
 }

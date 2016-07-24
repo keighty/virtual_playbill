@@ -3,9 +3,9 @@ var user = {
   columns: {
     id: { type: 'int', nonNullable: true, auto: true },
     fName: { type: 'string', nonNullable: true, maxlength: 60 },
-    lName: { type: 'string', nonNullable: true, maxlength: 60 }
+    lName: { type: 'string', nonNullable: true, maxlength: 60 },
   },
-  primaryKey: 'id'
+  primaryKey: 'id',
 }
 
 var performance = {
@@ -21,9 +21,9 @@ var performance = {
     choreographer: { type: 'string', maxlength: 60 },
     synopsis: { type: 'string', maxlength: 600 },
     category: { type: 'string', maxlength: 60 },
-    image: { type: 'string', maxlength: 260 }
+    image: { type: 'string', maxlength: 260 },
   },
-  primaryKey: 'id'
+  primaryKey: 'id',
 }
 
 var userPerformance = {
@@ -32,13 +32,13 @@ var userPerformance = {
     userId: {type: 'int', nonNullable: true},
     performanceId: {type: 'int', nonNullable: true},
     rating: {type: 'int'},
-    ticketDate: {type: 'date'}
+    ticketDate: {type: 'date'},
   },
   primaryKey: ['userId', 'performanceId'],
   foreignKey: [
     {colName: 'performanceId', referenceTable: 'performance', referenceCol: 'id'},
-    {colName: 'userId', referenceTable: 'user', referenceCol: 'id'}
-  ]
+    {colName: 'userId', referenceTable: 'user', referenceCol: 'id'},
+  ],
 }
 
 var performer = {
@@ -46,22 +46,22 @@ var performer = {
   columns: {
     id: { type: 'int', nonNullable: true, auto: true },
     fName: { type: 'string', maxlength: 60 },
-    lName: { type: 'string', maxlength: 60 }
+    lName: { type: 'string', maxlength: 60 },
   },
-  primaryKey: 'id'
+  primaryKey: 'id',
 }
 
 var performerPerformance = {
   name: 'performerPerformance',
   columns: {
     performerId: {type: 'int', nonNullable: true},
-    performanceId: {type: 'int', nonNullable: true}
+    performanceId: {type: 'int', nonNullable: true},
   },
   primaryKey: ['performerId', 'performanceId'],
   foreignKey: [
    {colName: 'performerId', referenceTable: 'performer', referenceCol: 'id'},
-   {colName: 'performanceId', referenceTable: 'performance', referenceCol: 'id'}
-  ]
+   {colName: 'performanceId', referenceTable: 'performance', referenceCol: 'id'},
+ ],
 }
 
 var getTableValues = function (schemaName, obj) {
@@ -77,7 +77,7 @@ var tableList = {
   performance,
   userPerformance,
   performer,
-  performerPerformance
+  performerPerformance,
 }
 
 module.exports = tableList
