@@ -1,7 +1,7 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var performance = require('../../../models/performance')
 var express = require('express')
+var performance = require('../../../models/performance')
 
 describe('performance routes', function () {
   var sandbox, router

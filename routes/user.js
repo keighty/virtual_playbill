@@ -1,5 +1,14 @@
 var express = require('express')
 var router = express.Router()
+var user = require('../models/user')
+
+router.get('/', function (req, res, next) {
+  user.all(function (err, users) {
+    if (err) res.send([])
+    else res.send(users)
+  })
+})
+
 // var onError = function (err) { if (err) throw err; }
 // var connection = require('../config/db').connect(onError)
 
