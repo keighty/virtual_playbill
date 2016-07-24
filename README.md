@@ -1,4 +1,5 @@
 # Virtual Playbill - Gen3
+<a href="https://codeclimate.com/github/keighty/virtual_playbill"><img src="https://codeclimate.com/github/keighty/virtual_playbill/badges/gpa.svg" /></a>
 
 Virtual Playbill in its current form will only track my own collection. To make the platform more flexible, and accessible to additional users, I am rewriting the data model.
 
@@ -31,7 +32,8 @@ $ echo 'export MYSQL_TESTVP_PASSWORD="my-new-pass"' >> ~/.bashrc
 ### Setup and seed the database
 
 ```
-$ npm run setup
+$ node config/schemabak.js
+$ node config/seeds.js
 ```
 
 ### Run the app server
