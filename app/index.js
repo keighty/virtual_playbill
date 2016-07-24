@@ -1,4 +1,4 @@
-var FilterablePerformanceGrid = require('./filterable-performance-grid.jsx')
+require('./filterable-performance-grid.jsx')
 
 /*
 PerformanceGrid

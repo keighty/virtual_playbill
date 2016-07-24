@@ -1,7 +1,6 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
 var performance = require('../../../models/performance')
-var Database = require('../../../config/db')
 
 describe('performance model', function () {
   var sandbox, mockDb
@@ -32,7 +31,6 @@ describe('performance model', function () {
 
   describe('#all', function () {
     it('should call performQuery', function () {
-      var cb = function () {}
       performance.all()
 
       expect(mockDb.performQuery.called).to.be.true
@@ -50,7 +48,7 @@ describe('performance model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
@@ -63,7 +61,6 @@ describe('performance model', function () {
 
   describe('#get', function () {
     it('should call performQuery', function () {
-      var cb = function () {}
       performance.get(1)
 
       expect(mockDb.performQuery.called).to.be.true
@@ -85,7 +82,7 @@ describe('performance model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
@@ -98,7 +95,6 @@ describe('performance model', function () {
 
   describe('#add', function () {
     it('should call performQuery', function () {
-      var cb = function () {}
       performance.add(testPerformance)
 
       expect(mockDb.performQuery.called).to.be.true
@@ -116,7 +112,7 @@ describe('performance model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
@@ -136,7 +132,7 @@ describe('performance model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }

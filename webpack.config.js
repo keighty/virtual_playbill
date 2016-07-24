@@ -1,6 +1,3 @@
-var path = require('path');
-var webpack = require('webpack');
-
 module.exports = {
   entry: './app/index.js',
   output: { path: __dirname, filename: '/public/javascripts/bundle.js' },

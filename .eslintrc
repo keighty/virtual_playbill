@@ -15,6 +15,7 @@
     "browser": true,
     "node": true
   },
+  "extends": "eslint:recommended",
   "rules": {
     "quotes": [2, "single", "avoid-escape"],
     "block-spacing": [2, "always"],
@@ -24,5 +25,7 @@
     "comma-dangle": [2, "always-multiline"],
     "object-shorthand": [2, "properties"],
     "no-console": [2],
+    "no-debugger": [2],
+    "no-undef": [0],
   }
 }

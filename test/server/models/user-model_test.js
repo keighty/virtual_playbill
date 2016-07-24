@@ -1,7 +1,6 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
 var user = require('../../../models/user')
-var Database = require('../../../config/db')
 
 describe('user model', function () {
   var sandbox, mockDb
@@ -47,7 +46,7 @@ describe('user model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
@@ -77,7 +76,7 @@ describe('user model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
@@ -95,7 +94,6 @@ describe('user model', function () {
     }
 
     it('should call performQuery', function () {
-      var cb = function () {}
       user.add(testUser)
 
       expect(mockDb.performQuery.called).to.be.true
@@ -113,7 +111,7 @@ describe('user model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
@@ -133,7 +131,7 @@ describe('user model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
@@ -153,7 +151,7 @@ describe('user model', function () {
     })
 
     it('should handle query errors', function (done) {
-      var cb = function (err, data) {
+      var cb = function (err) {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
