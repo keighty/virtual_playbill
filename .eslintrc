@@ -8,12 +8,12 @@
     "node": true
   },
   "rules": {
-    "quotes": [1, "double"],
+    "quotes": [2, "single", "avoid-escape"],
     "block-spacing": [2, "always"],
     "camelcase": [2, {"properties": "always"}],
     "comma-spacing": [2, {"before": false, "after": true}],
-    "space-in-parens": [2, "always"],
     "space-before-function-paren": [2, "always"],
-    "quotes": [2, "single", "avoid-escape"]
+    "comma-dangle": [2, "always-multiline"],
+    "object-shorthand": [2, "never"]
   }
 }
