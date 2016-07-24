@@ -4,7 +4,8 @@ var router = express.Router()
 
 router.get('/', function (req, res, next) {
   performance.all(function (err, performances) {
-    res.send(performances)
+    if (err) res.send('error finding performances: ' + err.message)
+    else res.send(performances)
   })
 })
 

@@ -4,7 +4,7 @@ var user = require('../models/user')
 
 router.get('/', function (req, res, next) {
   user.all(function (err, users) {
-    if (err) res.send([])
+    if (err) res.send('error finding users: ' + err.message)
     else res.send(users)
   })
 })

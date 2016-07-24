@@ -3,7 +3,7 @@ var sinon = require('sinon')
 var express = require('express')
 var user = require('../../../models/user')
 
-describe.only('user routes', function () {
+describe('user routes', function () {
   var sandbox, router
 
   beforeEach(function () {
@@ -53,13 +53,14 @@ describe.only('user routes', function () {
       registeredCallback(req, res)
     })
 
-    it('get should return [] if there is an error', function (done) {
+    it('get should return "error finding users" if there is an error', function (done) {
+      var errorMessage = 'error finding users: '
       sandbox.stub(user, 'all', function (cb) {
-        cb(new Error('something went wrong'))
+        cb(new Error('sql error'))
       })
 
       var req = {}
-      var res = stubResSend([], done)
+      var res = stubResSend(errorMessage + 'sql error', done)
 
       var registeredCallback = router.get.firstCall.args[1]
       registeredCallback(req, res)

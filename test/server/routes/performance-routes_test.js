@@ -53,6 +53,19 @@ describe('performance routes', function () {
       registeredCallback(req, res)
     })
 
+    it('get should return "error finding performances" if there is an error', function (done) {
+      var errorMessage = 'error finding performances: '
+      sandbox.stub(performance, 'all', function (cb) {
+        cb(new Error('sql error'))
+      })
+
+      var req = {}
+      var res = stubResSend(errorMessage + 'sql error', done)
+
+      var registeredCallback = router.get.firstCall.args[1]
+      registeredCallback(req, res)
+    })
+
     it('post should be registered', function () {
       expect(router.post.calledWith('/', sandbox.match.any)).to.be.true
     })
