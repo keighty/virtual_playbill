@@ -27,5 +27,17 @@ module.exports = {
   delete: function (id, cb) {
     query = ['DELETE FROM', tableName, 'WHERE ID=', id, ';'].join(' ')
     this.db.performQuery(query, cb)
+  },
+
+  getPerformances: function (id, cb) {
+    query = [
+      'SELECT performance.*, user_performance.ticket_date',
+      'FROM user_performance',
+      'JOIN performance',
+      'ON performance.id = user_performance.performance_id',
+      'WHERE user_id =',
+      id
+    ].join(' ')
+    this.db.performQuery(query, cb)
   }
 }

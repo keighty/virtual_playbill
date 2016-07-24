@@ -143,4 +143,13 @@ describe('user model', function () {
       registeredQueryCallback(new Error('Bad query'))
     })
   })
+
+  describe('#getPerformances', function () {
+    it('should call performQuery', function () {
+      var cb = function () {}
+      user.getPerformances(1, cb)
+
+      expect(mockDb.performQuery.called).to.be.true
+    })
+})
 })

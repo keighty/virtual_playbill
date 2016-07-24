@@ -163,6 +163,5 @@ describe('performance routes', function () {
       var registeredCallback = router.delete.firstCall.args[1]
       registeredCallback(req, res)
     })
-
   })
 })
