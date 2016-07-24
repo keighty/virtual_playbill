@@ -17,8 +17,8 @@ module.exports = {
     this.db.performQuery(query, cb)
   },
 
-  add: function (user, cb) {
-    var values = schema.getTableValues(tableName, user)
+  add: function (performer, cb) {
+    var values = schema.getTableValues(tableName, performer)
 
     query = ['INSERT into', tableName, 'VALUES (null,', values, ');'].join(' ')
     this.db.performQuery(query, cb)

@@ -67,7 +67,7 @@ var performerPerformance = {
 var getTableValues = function (schemaName, obj) {
   var keys = Object.keys(tableList[schemaName].columns)
   return keys.slice(1).map(function (col) {
-    return obj[col]
+    return '"' + obj[col] + '"'
   }).join(',')
 }
 
