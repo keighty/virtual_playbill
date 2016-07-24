@@ -1,7 +1,7 @@
 var Database = require('../config/db')
 var schema = require('../config/schema')
 var database = new Database()
-var tableName = 'performance'
+var tableName = 'user'
 var query
 
 module.exports = {
@@ -17,8 +17,8 @@ module.exports = {
     this.db.performQuery(query, cb)
   },
 
-  add: function (performance, cb) {
-    var values = schema.getTableValues(tableName, performance)
+  add: function (user, cb) {
+    var values = schema.getTableValues(tableName, user)
 
     query = ['INSERT into', tableName, 'VALUES (null,', values, ');'].join(' ')
     this.db.performQuery(query, cb)
@@ -26,6 +26,18 @@ module.exports = {
 
   delete: function (id, cb) {
     query = ['DELETE FROM', tableName, 'WHERE ID=', id, ';'].join(' ')
+    this.db.performQuery(query, cb)
+  },
+
+  getPerformances: function (id, cb) {
+    query = [
+      'SELECT performance.*',
+      'FROM performer_performance',
+      'JOIN performance',
+      'ON performance.id = performer_performance.performance_id',
+      'WHERE performer_id =',
+      id
+    ].join(' ')
     this.db.performQuery(query, cb)
   }
 }

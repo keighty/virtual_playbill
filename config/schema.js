@@ -1,4 +1,4 @@
-var users = {
+var user = {
   name: 'user',
   columns: {
     id: { type: 'int', nonNullable: true, auto: true },
@@ -64,29 +64,20 @@ var performerPerformance = {
   ]
 }
 
-module.exports = {
-  users,
+var getTableValues = function (schemaName, obj) {
+  var keys = Object.keys(tableList[schemaName].columns)
+  return keys.slice(1).map(function (col) {
+    return '"' + obj[col] + '"'
+  }).join(',')
+}
+
+var tableList = {
+  getTableValues,
+  user,
   performance,
   userPerformance,
   performer,
   performerPerformance
 }
 
-// var SchemaParser = require('./schema-parser')
-// var sp = new SchemaParser()
-// console.log(sp.processSchema(all))
-
-/* ROUGH WORK
-
-var complexTable = {
-  name: 'complex',
-  columns: {
-    fName: {type: 'string', maxlength: 60},
-    email: { type: 'string', maxlength: 90, nonNullable: true }
-  },
-  primaryKey: ['fName', 'email'],
-  foreignKey: {colName: 'email', referenceTable: 'basic', referenceCol: 'email'}
-
-
-
-*/
+module.exports = tableList

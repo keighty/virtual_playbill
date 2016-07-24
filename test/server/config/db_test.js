@@ -1,6 +1,6 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var Database = require('../../config/db')
+var Database = require('../../../config/db')
 var mysql = require('mysql')
 
 describe('Database', function () {
@@ -181,6 +181,97 @@ describe('Database', function () {
     it('should set the connection to null', function () {
       db.close()
       expect(db.connection).to.be.null
+    })
+  })
+
+  describe('performQuery', function () {
+    var query
+
+    beforeEach (function () {
+      mysqlMock.expects('createConnection')
+          .withArgs(config)
+          .returns(connection)
+      query = 'SELECT * FROM foo;'
+    })
+
+    it('should call connect', function () {
+      var dbConnectMock = sandbox.mock(db)
+      var cb = function () {}
+
+      dbConnectMock.expects('connect')
+      db.performQuery(query, cb)
+      dbConnectMock.verify()
+    })
+
+    it('should handle a connection error', function (done) {
+      var cb = function (err) {
+        expect(err.message).to.be.eql('Cannot connect to the database.')
+        done()
+      }
+
+      db.performQuery(query, cb)
+
+      var registeredCallback = connection.connect.firstCall.args[0]
+      registeredCallback(new Error('Cannot connect to the database.'))
+      mysqlMock.verify()
+    })
+
+    it('should call query', function (done) {
+      var cb = function () { done() }
+
+      db.performQuery(query,cb)
+      expect(connection.connect.called).to.be.true
+
+      var connectCallback = connection.connect.firstCall.args[0]
+      connectCallback()
+
+      var queryString = connection.query.firstCall.args[0]
+      expect(queryString).to.be.eql('USE ' + config.database)
+
+      var queryCallback = connection.query.firstCall.args[1]
+      queryCallback()
+
+      queryString = connection.query.secondCall.args[0]
+      expect(queryString).to.be.eql(query)
+      var queryCallback = connection.query.secondCall.args[1]
+      queryCallback()
+    })
+
+    it('should pass data to the callback', function (done) {
+      var testdata = [{foo: 'bar'}, {foo: 'baz'}]
+      var cb = function (err, data) {
+        expect(err).to.be.null
+        expect(data).to.be.eql(testdata)
+        done()
+      }
+
+      db.performQuery(query,cb)
+      expect(connection.connect.called).to.be.true
+      var connectCallback = connection.connect.firstCall.args[0]
+      connectCallback()
+      var queryCallback = connection.query.firstCall.args[1]
+      queryCallback()
+
+      var queryCallback = connection.query.secondCall.args[1]
+      queryCallback(null, testdata)
+    })
+
+    it('should pass sql errors to the callback', function (done) {
+      var errMessage = 'Sql error'
+      var cb = function (err, data) {
+        expect(err.message).to.be.eql(errMessage)
+        done()
+      }
+
+      db.performQuery(query,cb)
+      expect(connection.connect.called).to.be.true
+      var connectCallback = connection.connect.firstCall.args[0]
+      connectCallback()
+      var queryCallback = connection.query.firstCall.args[1]
+      queryCallback()
+
+      var queryCallback = connection.query.secondCall.args[1]
+      queryCallback(new Error('Sql error'))
     })
   })
 })

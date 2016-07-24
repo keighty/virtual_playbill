@@ -1,9 +1,6 @@
-var mysql = require('mysql')
-var dbconfig = require('./db-config')
-
 var Database = function (database, config) {
-  this.mysql = database || mysql
-  this.config = config || dbconfig
+  this.mysql = database || require('mysql')
+  this.config = config || require('./db-config')
   this.connection = null
 
   this.connect = function (cb) {
@@ -30,6 +27,17 @@ var Database = function (database, config) {
       this.connection.end()
       this.connection = null
     }
+  }
+
+  this.performQuery = function (query, cb) {
+    var self = this
+    self.connect(function (err) {
+      if (err) cb(err)
+      else self.query(query, function (err, data) {
+        cb(err, data)
+        self.close()
+      })
+    })
   }
 }
 

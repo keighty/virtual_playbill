@@ -1,5 +1,5 @@
-var db = require('./db')
-var dbName = db.dbName
+var Database = require('./db')
+var db = new Database()
 var onError = function (err) { if (err) throw err; }
 
 var connection = db.connect(onError)
@@ -10,8 +10,8 @@ connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err
     if (err) throw err;
     connection.query('CREATE TABLE IF NOT EXISTS user(' +
       'id INT NOT NULL AUTO_INCREMENT,' +
-      'f_name VARCHAR(60),' +
-      'l_name VARCHAR(60),' +
+      'fName VARCHAR(60),' +
+      'lName VARCHAR(60),' +
       'PRIMARY KEY(id)' +
        ')', function (err) {
           if (err) throw err
@@ -33,30 +33,30 @@ connection.query('CREATE DATABASE IF NOT EXISTS virtual_playbill', function (err
           if (err) throw err
       });
     connection.query('CREATE TABLE IF NOT EXISTS user_performance (' +
-      'user_id INT NOT NULL,' +
-      'performance_id INT NOT NULL,' +
+      'userId INT NOT NULL,' +
+      'performanceId INT NOT NULL,' +
       'rating INT,' +
       'ticket_date DATE,' +
-      'FOREIGN KEY (user_id) REFERENCES user(id),' +
-      'FOREIGN KEY (performance_id) REFERENCES performance(id),' +
-      'PRIMARY KEY (user_id, performance_id)' +
+      'FOREIGN KEY (userId) REFERENCES user(id),' +
+      'FOREIGN KEY (performanceId) REFERENCES performance(id),' +
+      'PRIMARY KEY (userId, performanceId)' +
       ')', function (err) {
           if (err) throw err
       });
     connection.query('CREATE TABLE IF NOT EXISTS performer(' +
       'id INT NOT NULL AUTO_INCREMENT,' +
-      'f_name VARCHAR(60),' +
-      'l_name VARCHAR(60),' +
+      'fName VARCHAR(60),' +
+      'lName VARCHAR(60),' +
       'PRIMARY KEY(id)' +
        ')', function (err) {
           if (err) throw err
       });
     connection.query('CREATE TABLE IF NOT EXISTS performer_performance(' +
-      'performer_id INT NOT NULL,' +
-      'performance_id INT NOT NULL,' +
-      'FOREIGN KEY (performer_id) REFERENCES performer(id),' +
-      'FOREIGN KEY (performance_id) REFERENCES performance(id),' +
-      'PRIMARY KEY (performer_id, performance_id)' +
+      'performerId INT NOT NULL,' +
+      'performanceId INT NOT NULL,' +
+      'FOREIGN KEY (performerId) REFERENCES performer(id),' +
+      'FOREIGN KEY (performanceId) REFERENCES performance(id),' +
+      'PRIMARY KEY (performerId, performanceId)' +
        ')', function (err) {
           if (err) throw err
       });

@@ -1,20 +1,0 @@
-
-> testvp@0.0.0 test /Users/keighty/Documents/projects/testvp
-> mocha --watch --recursive test/**/*.js
-
-
-[?25l
-
-  db tests
-    ✓ should pass this canary test
-    ✓ get should return null connection by default
-    ✓ close should set the existing connection to null
-    ✓ close should close the existing connection
-    ✓ connect should set connection (81ms)
-    ✓ should
-
-
-  6 passing (96ms)
-
-[?25h
-
