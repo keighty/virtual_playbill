@@ -1,5 +1,6 @@
 # Virtual Playbill - Gen3
 <a href="https://codeclimate.com/github/keighty/virtual_playbill"><img src="https://codeclimate.com/github/keighty/virtual_playbill/badges/gpa.svg" /></a>
+<a href="https://travis-ci.org/keighty/virtual_playbill"><img src="https://travis-ci.org/keighty/virtual_playbill.svg?branch=master" /></a>
 
 Virtual Playbill in its current form will only track my own collection. To make the platform more flexible, and accessible to additional users, I am rewriting the data model.
 
