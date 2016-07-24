@@ -11,7 +11,7 @@
     "cover-client": "karma start --reporters dots,coverage --single-run",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
-    "precommit": "eslint .; mocha --recursive test/server"
+    "precommit": "eslint .; mocha --reporter=dot --recursive test/server"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
