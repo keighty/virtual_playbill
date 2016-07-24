@@ -1,9 +1,9 @@
 var expect = require('chai').expect
 var sinon = require('sinon')
-var user = require('../../../models/user')
+var performer = require('../../../models/performer')
 var Database = require('../../../config/db')
 
-describe('user model', function () {
+describe('performer model', function () {
   var sandbox, mockDb
 
   var testData = [
@@ -16,7 +16,7 @@ describe('user model', function () {
     mockDb = {
       performQuery: sandbox.spy()
     }
-    user.db = mockDb
+    performer.db = mockDb
   })
 
   afterEach(function () {
@@ -30,17 +30,17 @@ describe('user model', function () {
   describe('#all', function () {
     it('should call performQuery', function () {
       var cb = function () {}
-      user.all(cb)
+      performer.all(cb)
 
       expect(mockDb.performQuery.called).to.be.true
     })
 
-    it('should return all users', function (done) {
+    it('should return all performers', function (done) {
       var cb = function (err, data) {
         expect(data).to.be.eql(testData)
         done()
       }
-      user.all(cb)
+      performer.all(cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(null, testData)
@@ -51,7 +51,7 @@ describe('user model', function () {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
-      user.all(cb)
+      performer.all(cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(new Error('Bad query'))
@@ -60,17 +60,17 @@ describe('user model', function () {
 
   describe('#get', function () {
     it('should call performQuery', function () {
-      user.get()
+      performer.get()
 
       expect(mockDb.performQuery.called).to.be.true
     })
 
-    it('should return a specific user', function (done) {
+    it('should return a specific performer', function (done) {
       var cb = function (err, data) {
         expect(data).to.be.eql([testData[0]])
         done()
       }
-      user.get(1, cb)
+      performer.get(1, cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(null, [testData[0]])
@@ -81,7 +81,7 @@ describe('user model', function () {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
-      user.get(1, cb)
+      performer.get(1, cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(new Error('Bad query'))
@@ -89,24 +89,24 @@ describe('user model', function () {
   })
 
   describe('#add', function () {
-    var testUser = {
+    var testPerformer = {
       fName: 'foo',
       lName: 'bar'
     }
 
     it('should call performQuery', function () {
       var cb = function () {}
-      user.add(testUser)
+      performer.add(testPerformer)
 
       expect(mockDb.performQuery.called).to.be.true
     })
 
-    it('should return a specific user', function (done) {
+    it('should return a specific performer', function (done) {
       var cb = function (err, data) {
         expect(data).to.be.eql('success')
         done()
       }
-      user.add(testUser, cb)
+      performer.add(testPerformer, cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(null, 'success')
@@ -117,7 +117,7 @@ describe('user model', function () {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
-      user.add(testUser, cb)
+      performer.add(testPerformer, cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(new Error('Bad query'))
@@ -127,7 +127,7 @@ describe('user model', function () {
   describe('#delete', function () {
     it('should call performQuery', function () {
       var cb = function () {}
-      user.delete(1, cb)
+      performer.delete(1, cb)
 
       expect(mockDb.performQuery.called).to.be.true
     })
@@ -137,7 +137,7 @@ describe('user model', function () {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
-      user.delete(1, cb)
+      performer.delete(1, cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(new Error('Bad query'))
@@ -147,7 +147,7 @@ describe('user model', function () {
   describe('#getPerformances', function () {
     it('should call performQuery', function () {
       var cb = function () {}
-      user.getPerformances(1, cb)
+      performer.getPerformances(1, cb)
 
       expect(mockDb.performQuery.called).to.be.true
     })
@@ -157,7 +157,7 @@ describe('user model', function () {
         expect(err.message).to.be.eql('Bad query')
         done()
       }
-      user.getPerformances(1, cb)
+      performer.getPerformances(1, cb)
 
       var registeredQueryCallback = mockDb.performQuery.firstCall.args[1]
       registeredQueryCallback(new Error('Bad query'))

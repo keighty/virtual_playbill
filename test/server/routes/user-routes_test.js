@@ -165,7 +165,7 @@ describe('user routes', function () {
     })
   })
 
-  describe.only('/:id/performances', function () {
+  describe('/:id/performances', function () {
     var testPerformances = [{foo: 'bar'}, {foo: 'baz'}]
     var req = {params: {id: 6}}
 
