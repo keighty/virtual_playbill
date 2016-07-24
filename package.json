@@ -6,10 +6,11 @@
     "start": "node ./bin/www",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
-    "test": "mocha --recursive test",
-    "testWatch": "multi='mocha-osx-reporter=- spec=-' mocha --reporter mocha-multi --watch --recursive test",
+    "test": "mocha --recursive test/server",
+    "testWatch": "multi='mocha-osx-reporter=- spec=-' mocha --reporter mocha-multi --watch --recursive test/server",
+    "testClient": "node_modules/karma/bin/karma start --reporters dots",
     "cover": "node_modules/istanbul/lib/cli.js cover _mocha -- --recursive test/server",
-    "precommit": "eslint .; mocha --recursive test"
+    "precommit": "eslint .; mocha --recursive test/server"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
