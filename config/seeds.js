@@ -1,5 +1,5 @@
-var db = require('./db')
-var dbName = db.dbName
+var Database = require('./db')
+var db = new Database()
 var onError = function (err) { if (err) throw err; }
 
 var connection = db.connect(onError)
@@ -7,7 +7,7 @@ var connection = db.connect(onError)
 connection.query('USE virtual_playbill', function (err) {
   if (err) throw err;
   connection.query('INSERT into user (' +
-    'f_name, l_name' +
+    'fName, lName' +
     ') ' +
     'VALUES (' +
     '"Foo",' +
@@ -16,7 +16,7 @@ connection.query('USE virtual_playbill', function (err) {
         if (err) throw err
     });
   connection.query('INSERT into user (' +
-    'f_name, l_name' +
+    'fName, lName' +
     ') ' +
     'VALUES (' +
     '"Crunchy",' +
@@ -67,7 +67,7 @@ connection.query('USE virtual_playbill', function (err) {
         if (err) throw err
     });
   connection.query('INSERT into performer (' +
-    'f_name, l_name' +
+    'fName, lName' +
     ') ' +
     'VALUES (' +
     '"Sally",' +
@@ -76,7 +76,7 @@ connection.query('USE virtual_playbill', function (err) {
         if (err) throw err
     });
   connection.query('INSERT into performer (' +
-    'f_name, l_name' +
+    'fName, lName' +
     ') ' +
     'VALUES (' +
     '"Jeff",' +
