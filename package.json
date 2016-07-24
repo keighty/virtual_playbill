@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "test": "mocha --recursive test/server",
+    "test-client": "karma start --reporters dots",
+    "test-watch": "multi='mocha-osx-reporter=- spec=-' mocha --reporter mocha-multi --watch --recursive test/server",
+    "cover": "node_modules/istanbul/lib/cli.js cover _mocha -- --recursive test/server",
+    "cover-client": "karma start --reporters dots,coverage --single-run",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
-    "test": "mocha --recursive test/server",
-    "testWatch": "multi='mocha-osx-reporter=- spec=-' mocha --reporter mocha-multi --watch --recursive test/server",
-    "testClient": "node_modules/karma/bin/karma start --reporters dots",
-    "cover": "node_modules/istanbul/lib/cli.js cover _mocha -- --recursive test/server",
     "precommit": "eslint .; mocha --recursive test/server"
   },
   "dependencies": {
@@ -32,12 +33,23 @@
     "chai": "^3.5.0",
     "husky": "0.11.2",
     "istanbul": "^0.4.2",
+    "karma": "^0.13.22",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-clear-screen-reporter": "1.0.0",
+    "karma-cli": "^0.1.2",
+    "karma-coverage": "^0.5.5",
     "karma-notification-reporter": "0.1.1",
+    "karma-mocha": "^0.2.2",
+    "karma-sinon": "1.0.5",
+    "karma-sinon-chai": "1.2.3",
     "mocha": "^2.4.5",
     "mocha-multi": "0.9.0",
     "mocha-osx-reporter": "0.1.2",
     "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0",
     "webpack": "1.12.12",
-    "webpack-dev-server": "1.12.1"
+    "webpack-dev-server": "1.12.1",
+    "mocha": "^2.4.5"
   }
 }
