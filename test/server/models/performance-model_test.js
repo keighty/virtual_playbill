@@ -11,13 +11,13 @@ describe('performance model', function () {
     director: 'bar',
     venue: 'baz',
     choreographer: 'crunchy',
-    category: 'bacon'
+    category: 'bacon',
   }
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create()
     mockDb = {
-      performQuery: sandbox.spy()
+      performQuery: sandbox.spy(),
     }
     performance.db = mockDb
   })
@@ -72,7 +72,7 @@ describe('performance model', function () {
     it('should return a specific performance', function (done) {
       var testData = [
         {id: 1, foo: 'bar'},
-        {id: 2, foo: 'baz'}
+        {id: 2, foo: 'baz'},
       ]
       var cb = function (err, data) {
         expect(data).to.be.eql([testData[0]])

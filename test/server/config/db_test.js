@@ -18,7 +18,7 @@ describe('Database', function () {
     connection = {
       connect: sinon.spy(),
       query: sinon.spy(),
-      end: sinon.spy()
+      end: sinon.spy(),
     }
 
     db = new Database(mysql, config)
@@ -219,7 +219,7 @@ describe('Database', function () {
     it('should call query', function (done) {
       var cb = function () { done() }
 
-      db.performQuery(query,cb)
+      db.performQuery(query, cb)
       expect(connection.connect.called).to.be.true
 
       var connectCallback = connection.connect.firstCall.args[0]
@@ -245,7 +245,7 @@ describe('Database', function () {
         done()
       }
 
-      db.performQuery(query,cb)
+      db.performQuery(query, cb)
       expect(connection.connect.called).to.be.true
       var connectCallback = connection.connect.firstCall.args[0]
       connectCallback()
@@ -263,7 +263,7 @@ describe('Database', function () {
         done()
       }
 
-      db.performQuery(query,cb)
+      db.performQuery(query, cb)
       expect(connection.connect.called).to.be.true
       var connectCallback = connection.connect.firstCall.args[0]
       connectCallback()

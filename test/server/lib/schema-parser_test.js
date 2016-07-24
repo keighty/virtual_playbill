@@ -13,13 +13,13 @@ describe('SchemaParser tests', function () {
     table1 = {
       name: 'tester1',
       columns: {
-        fName: { type: 'string', maxlength: 66 }
+        fName: { type: 'string', maxlength: 66 },
       },
-      primaryKey: 'fName'
+      primaryKey: 'fName',
     }
   })
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
   });
 
@@ -40,7 +40,7 @@ describe('SchemaParser tests', function () {
 
     it('processColumns should invoke processColumn for each column provided', function (done) {
       var columns = {
-        fName: { type: 'string', maxlength: 66 }
+        fName: { type: 'string', maxlength: 66 },
       }
       sandbox.stub(schemaParser, 'processColumn', function (name, data) {
         expect(name).to.be.eql('fName')
@@ -54,7 +54,7 @@ describe('SchemaParser tests', function () {
     it('processColumns should return a list of SQL column definitions', function () {
       var columns = {
         fName: { type: 'string', maxlength: 66 },
-        cmail:  { type: 'string', maxlength: 33, nonnull: true }
+        cmail:  { type: 'string', maxlength: 33, nonnull: true },
       }
       var result = schemaParser.processColumns(columns)
 
@@ -64,7 +64,7 @@ describe('SchemaParser tests', function () {
 
   describe('Column Type', function () {
     var columns = {
-      fName: { type: 'string', maxlength: 66 }
+      fName: { type: 'string', maxlength: 66 },
     }
 
     it('processColumn should call processType for a column', function (done) {
@@ -94,7 +94,7 @@ describe('SchemaParser tests', function () {
 
     describe('String', function () {
       var stringColumn = {
-        fName: { type: 'string', maxlength: 66 }
+        fName: { type: 'string', maxlength: 66 },
       }
 
       it('processType should call processMaxLength for a string column', function (done) {
@@ -121,7 +121,7 @@ describe('SchemaParser tests', function () {
 
     describe('Int', function () {
       var intColumn = {
-        id: {type: 'int', nonNullable: true}
+        id: {type: 'int', nonNullable: true},
       }
 
       it('processType should return valid syntax for an INT type', function () {
@@ -133,13 +133,13 @@ describe('SchemaParser tests', function () {
 
     describe('Date', function () {
       var dateColumn = {
-        ticket_date: {type: 'date'}
+        ticketDate: {type: 'date'},
       }
 
       it('processType should return valid syntax for a DATE type', function () {
-        var expectedSQL = 'ticket_date DATE'
+        var expectedSQL = 'ticketDate DATE'
 
-        expect(schemaParser.processColumn('ticket_date', dateColumn.ticket_date)).to.be.eql(expectedSQL)
+        expect(schemaParser.processColumn('ticketDate', dateColumn.ticketDate)).to.be.eql(expectedSQL)
       })
     })
 
@@ -161,7 +161,7 @@ describe('SchemaParser tests', function () {
 
     describe('AutoIncrement', function () {
       var intColumn = {
-        id: {type: 'int', nonNullable: true, auto: true}
+        id: {type: 'int', nonNullable: true, auto: true},
       }
 
       it('processType should call processAutoIncrement', function (done) {
@@ -258,7 +258,7 @@ describe('SchemaParser tests', function () {
         'id INT AUTO_INCREMENT NOT NULL',
         'fName VARCHAR(60)',
         'lName VARCHAR(60)',
-        'email VARCHAR(90)'
+        'email VARCHAR(90)',
       ]
       sandbox.stub(schemaParser, 'polishColumns', function (data) {
         expect(data).to.be.eql(expectedArgs)
@@ -315,7 +315,7 @@ describe('SchemaParser tests', function () {
     it('parseSchema should return valid SQL to create the schema', function () {
       var expectedSQL = [
         'CREATE TABLE IF NOT EXISTS basic (id INT AUTO_INCREMENT NOT NULL, fName VARCHAR(60), lName VARCHAR(60), email VARCHAR(90), PRIMARY KEY (id), FOREIGN KEY (fName) REFERENCES foo(bar));',
-        'CREATE TABLE IF NOT EXISTS complex (fName VARCHAR(60), email VARCHAR(90) NOT NULL, PRIMARY KEY (fName,email), FOREIGN KEY (fName) REFERENCES foo(bar), FOREIGN KEY (email) REFERENCES crunchy(bacon));'
+        'CREATE TABLE IF NOT EXISTS complex (fName VARCHAR(60), email VARCHAR(90) NOT NULL, PRIMARY KEY (fName,email), FOREIGN KEY (fName) REFERENCES foo(bar), FOREIGN KEY (email) REFERENCES crunchy(bacon));',
       ]
 
       expect(schemaParser.parseSchema(testSchema)).to.be.eql(expectedSQL)
