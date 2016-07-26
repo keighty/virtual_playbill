@@ -1,5 +1,5 @@
-var FilterablePerformanceGrid = require('./filterable-performance-grid.jsx')
-console.log('hello')
+require('./filterable-performance-grid.jsx')
+
 /*
 PerformanceGrid
   SearchBar
