@@ -1,4 +1,4 @@
-describe('getUser', function () {
+describe('getUsers', function () {
   var sandbox, domElements, testData, responseStub
 
   beforeEach(function () {
@@ -32,33 +32,33 @@ describe('getUser', function () {
       done()
     })
 
-    getUser()
+    getUsers()
   })
 
-  it('should register updateUser with callService', function () {
+  it('should register updateUsers with callService', function () {
     var callServiceMock = sandbox.mock(window)
         .expects('callService')
-        .withArgs(sinon.match.any, updateUser)
+        .withArgs(sinon.match.any, updateUsers)
 
-    getUser()
+    getUsers()
     callServiceMock.verify()
   })
 
-  describe('updateUser', function () {
+  describe('updateUsers', function () {
     it('should update message if status !=200', function () {
-      updateUser(404, '..err..')
+      updateUsers(404, '..err..')
 
       expect(domElements.message.innerHTML).to.be.eql('..err.. (status: 404)')
     })
 
     it('should update userCount', function () {
-      updateUser(200, responseStub)
+      updateUsers(200, responseStub)
 
       expect(domElements.userCount.innerHTML).to.be.eql(3)
     })
 
     it('should update user table', function () {
-      updateUser(200, responseStub)
+      updateUsers(200, responseStub)
 
       expect(domElements.users.innerHTML).contains('<table>')
       expect(domElements.users.innerHTML).contains('<td>foo</td>')
@@ -113,5 +113,9 @@ describe('getUser', function () {
 
       expect(cb.callCount).to.be.eql(0)
     })
+  })
+
+  it('should register initpage handler with window onload', function () {
+    expect(window.onload).to.be.eql(initpage)
   })
 })
