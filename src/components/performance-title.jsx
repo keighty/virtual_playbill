@@ -16,4 +16,3 @@ let title = {
 }
 
 export default PerformanceTitle
-
