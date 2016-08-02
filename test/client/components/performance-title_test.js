@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import {shallow} from 'enzyme'
 import PerformanceTitle from '../../../src/components/performance-title'
 
-describe.only('<PerformanceTitle>', () => {
+describe('<PerformanceTitle>', () => {
   const props = {
     title: 'foo',
   }
