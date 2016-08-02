@@ -3,15 +3,15 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 
 class PerformanceImage extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     return (
       <img style={imageStyle} src={this.props.image} />
     )
   }
+}
+
+PerformanceImage.propTypes = {
+  image: React.PropTypes.string.isRequired
 }
 
 let imageStyle = {
