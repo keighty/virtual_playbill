@@ -4,15 +4,12 @@ import ReactDOM from 'react-dom'
 import moment from 'moment'
 
 class PerformanceDate extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      formattedDate: moment(this.props.date).format('MMM D YYYY')
-    }
-  }
-
   render() {
-    return <p style={ticketDate}>{this.state.formattedDate}</p>
+    const formattedDate = () => {
+      if (this.props.date) return moment(this.props.date).format('MMM D YYYY')
+      else return 'No date'
+    }
+    return <p style={ticketDate}>{formattedDate()}</p>
   }
 }
 

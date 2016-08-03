@@ -7,6 +7,7 @@ describe('<PerformanceDate>', () => {
   const props = {
     date: '2016-01-24',
   }
+
   it('should pass this canary test', () => {
     expect(true).to.be.true
   })
@@ -17,6 +18,12 @@ describe('<PerformanceDate>', () => {
 
     expect(dateTag.length).to.be.eql(1)
     expect(dateTag.text()).to.be.eql('Jan 24 2016')
-    // expect(wrapper.html()).to.be.eql('<input type="text" placeholder="Search shows, actors, company, etc"/>')
+  })
+
+  it('should indicate no date if none given', function () {
+    const wrapper = shallow(<PerformanceDate />)
+    const dateTag = wrapper.find('p')
+
+    expect(dateTag.text()).to.be.eql('No date')
   })
 })
