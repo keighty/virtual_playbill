@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha --recursive test/server",
+    "test": "mocha --reporter=dot --compilers js:babel-register --recursive test/server test/client/components",
     "test-client": "karma start --reporters=dots,notification,clear-screen",
-    "test-watch": "multi='mocha-osx-reporter=- spec=-' mocha --reporter mocha-multi --watch --recursive test/server",
+    "test-watch": "multi='mocha-osx-reporter=- dot=-' mocha --reporter mocha-multi --watch --compilers js:babel-register --recursive test/server test/client/components",
     "cover": "node_modules/istanbul/lib/cli.js cover _mocha -- --recursive test/server",
     "cover-client": "karma start --reporters dots,coverage --single-run",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
-    "precommit": "eslint .; mocha --reporter=dot --recursive test/server"
+    "precommit": "npm test",
+    "prepush": "eslint ."
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -21,8 +22,8 @@
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
     "mysql": "2.10.2",
-    "react": "0.14.7",
-    "react-dom": "0.14.7",
+    "react": "15.2.1",
+    "react-dom": "15.2.1",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "babel-preset-es2015": "6.3.13",
     "babel-preset-react": "6.3.13",
     "chai": "^3.5.0",
+    "enzyme": "2.4.1",
     "husky": "0.11.2",
     "istanbul": "^0.4.2",
     "karma": "^0.13.22",
@@ -39,17 +41,18 @@
     "karma-clear-screen-reporter": "1.0.0",
     "karma-cli": "^0.1.2",
     "karma-coverage": "^0.5.5",
-    "karma-notification-reporter": "0.1.1",
     "karma-mocha": "^0.2.2",
+    "karma-notification-reporter": "0.1.1",
     "karma-sinon": "1.0.5",
     "karma-sinon-chai": "1.2.3",
     "mocha": "^2.4.5",
     "mocha-multi": "0.9.0",
     "mocha-osx-reporter": "0.1.2",
+    "moment": "2.14.1",
+    "react-addons-test-utils": "15.2.1",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "webpack": "1.12.12",
-    "webpack-dev-server": "1.12.1",
-    "mocha": "^2.4.5"
+    "webpack-dev-server": "1.12.1"
   }
 }

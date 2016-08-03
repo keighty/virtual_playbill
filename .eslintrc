@@ -17,6 +17,7 @@
   },
   "extends": "eslint:recommended",
   "rules": {
+    "no-unused-vars": [0],
     "quotes": [2, "single", "avoid-escape"],
     "block-spacing": [2, "always"],
     "camelcase": [2, {"properties": "always"}],
