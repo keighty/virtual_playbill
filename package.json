@@ -4,15 +4,15 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha --compilers js:babel-register --recursive test/server test/client/components",
+    "test": "mocha --reporter=dot --compilers js:babel-register --recursive test/server test/client/components",
     "test-client": "karma start --reporters=dots,notification,clear-screen",
     "test-watch": "multi='mocha-osx-reporter=- dot=-' mocha --reporter mocha-multi --watch --compilers js:babel-register --recursive test/server test/client/components",
-    "cover": "node_modules/istanbul/lib/cli.js cover _mocha -- --recursive test/server test/client/components",
+    "cover": "node_modules/istanbul/lib/cli.js cover _mocha -- --recursive test/server",
     "cover-client": "karma start --reporters dots,coverage --single-run",
     "setup": "node ./config/schema.js; node ./config/seeds.js",
     "build": "webpack --progress --colors --watch",
     "precommit": "npm test",
-    "prepush": "eslint .",
+    "prepush": "eslint ."
   },
   "dependencies": {
     "body-parser": "~1.13.2",
