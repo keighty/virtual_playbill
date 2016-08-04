@@ -1,7 +1,7 @@
-describe('getUsers', function () {
+describe('getUsers', () => {
   var sandbox, domElements, testData, responseStub
 
-  beforeEach(function () {
+  beforeEach(() => {
     sandbox = sinon.sandbox.create()
     domElements = {}
     sandbox.stub(document, 'getElementById', function (id) {
@@ -17,15 +17,15 @@ describe('getUsers', function () {
     responseStub = JSON.stringify(testData)
   })
 
-  afterEach(function () {
+  afterEach(() => {
     sandbox.restore()
   })
 
-  it('should pass this canary test', function () {
+  it('should pass this canary test', () => {
     expect(true).to.eql(true)
   })
 
-  it('should call callService', function (done) {
+  it('should call callService', (done) => {
     sandbox.stub(window, 'callService', function (params) {
       expect(params.method).to.be.eql('GET')
       expect(params.url).to.be.eql('/user')
@@ -35,7 +35,7 @@ describe('getUsers', function () {
     getUsers()
   })
 
-  it('should register updateUsers with callService', function () {
+  it('should register updateUsers with callService', () => {
     var callServiceMock = sandbox.mock(window)
         .expects('callService')
         .withArgs(sinon.match.any, updateUsers)
@@ -44,20 +44,20 @@ describe('getUsers', function () {
     callServiceMock.verify()
   })
 
-  describe('updateUsers', function () {
-    it('should update message if status !=200', function () {
+  describe('updateUsers', () => {
+    it('should update message if status !=200', () => {
       updateUsers(404, '..err..')
 
       expect(domElements.message.innerHTML).to.be.eql('..err.. (status: 404)')
     })
 
-    it('should update userCount', function () {
+    it('should update userCount', () => {
       updateUsers(200, responseStub)
 
       expect(domElements.userCount.innerHTML).to.be.eql(3)
     })
 
-    it('should update user table', function () {
+    it('should update user table', () => {
       updateUsers(200, responseStub)
 
       expect(domElements.users.innerHTML).contains('<table>')
@@ -67,21 +67,21 @@ describe('getUsers', function () {
     })
   })
 
-  describe('callService', function () {
+  describe('callService', () => {
     var xhr, opts
 
-    beforeEach(function () {
+    beforeEach(() => {
       opts = {method: 'GET', url: '/user'}
       xhr = sinon.useFakeXMLHttpRequest()
       xhr.requests = []
       xhr.onCreate = function (req) { xhr.requests.push(req) }
     })
 
-    afterEach(function () {
+    afterEach(() => {
       xhr.restore()
     })
 
-    it('should make an ajax request', function () {
+    it('should make an ajax request', () => {
       callService(opts, sandbox.spy())
 
       expect(xhr.requests[0].method).to.be.eql('GET')
@@ -89,7 +89,7 @@ describe('getUsers', function () {
       expect(xhr.requests[0].sendFlag).to.be.true
     })
 
-    it('should send the response and status code to the callback', function () {
+    it('should send the response and status code to the callback', () => {
       var cb = sandbox.mock().withArgs(200, '...res...').atLeast(1)
 
       callService(opts, cb)
@@ -98,7 +98,7 @@ describe('getUsers', function () {
       cb.verify()
     })
 
-    it('should send error response to the callback', function () {
+    it('should send error response to the callback', () => {
       var cb = sandbox.mock().withArgs(404, '...err...').atLeast(1)
 
       callService(opts, cb)
@@ -106,7 +106,7 @@ describe('getUsers', function () {
       cb.verify()
     })
 
-    it('should only send a response when it is ready', function () {
+    it('should only send a response when it is ready', () => {
       var cb = sandbox.spy()
 
       callService(opts, cb)
@@ -115,7 +115,7 @@ describe('getUsers', function () {
     })
   })
 
-  it('should register initpage handler with window onload', function () {
+  it('should register initpage handler with window onload', () => {
     expect(window.onload).to.be.eql(initpage)
   })
 })
