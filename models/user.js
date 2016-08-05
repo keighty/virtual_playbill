@@ -31,11 +31,11 @@ module.exports = {
 
   getPerformances: function (id, cb) {
     query = [
-      'SELECT performance.*',
-      'FROM performer_performance',
+      'SELECT performance.*, user_performance.ticketDate',
+      'FROM user_performance',
       'JOIN performance',
-      'ON performance.id = performer_performance.performance_id',
-      'WHERE performer_id =',
+      'ON performance.id = user_performance.performanceId',
+      'WHERE userId =',
       id,
     ].join(' ')
     this.db.performQuery(query, cb)
