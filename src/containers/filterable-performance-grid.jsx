@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import SearchBar from './search-bar.jsx'
-import FilterablePerformances from './filterable-performances.jsx'
+import SearchBar from '../components/search-bar.jsx'
+import FilterablePerformances from '../containers/filterable-performances.jsx'
 
 // TODO: get the user id
 class PerformanceGrid extends React.Component {
@@ -16,5 +16,7 @@ class PerformanceGrid extends React.Component {
   }
 }
 
-ReactDOM.render(<PerformanceGrid />,
-  document.getElementById('playbillIndex'))
+if (typeof window !== 'undefined') {
+  ReactDOM.render(<PerformanceGrid />,
+    document.getElementById('playbillIndex'))
+}
