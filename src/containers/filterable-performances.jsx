@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import PerformanceFrame from './performance-frame.jsx'
+import PerformanceFrame from '../components/performance-frame.jsx'
 // this is the class where we retrieve the data
 
 class FilterablePerformances extends React.Component {

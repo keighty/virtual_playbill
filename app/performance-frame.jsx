@@ -9,7 +9,7 @@ class PerformanceFrame extends React.Component {
     super(props)
     this.state = {
       title: props.performance.title,
-      date: props.performance.ticket_date,
+      date: props.performance.ticketDate,
       image: props.performance.image
     }
   }
