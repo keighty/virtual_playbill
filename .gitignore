@@ -1,4 +1,5 @@
 node_modules/
 npm-debug.log
 public/javascripts/bundle.js
+public/javascripts/bundled.js
 coverage/

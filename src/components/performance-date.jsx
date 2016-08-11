@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import moment from 'moment'
 
-class PerformanceDate extends React.Component {
+export class PerformanceDate extends React.Component {
   render() {
     const formattedDate = () => {
       if (this.props.date) return moment(this.props.date).format('MMM D YYYY')

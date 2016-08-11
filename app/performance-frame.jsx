@@ -8,6 +8,7 @@ class PerformanceFrame extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      key: props.key,
       title: props.performance.title,
       date: props.performance.ticketDate,
       image: props.performance.image

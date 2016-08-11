@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 
-class PerformanceImage extends React.Component {
+export class PerformanceImage extends React.Component {
   render() {
     return (
       <img style={imageStyle} src={this.props.image} />

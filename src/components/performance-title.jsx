@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 
-class PerformanceTitle extends React.Component {
+export class PerformanceTitle extends React.Component {
   render() {
     return <h4 style={title}>{this.props.title}</h4>
   }

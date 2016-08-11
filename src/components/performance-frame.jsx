@@ -4,7 +4,7 @@ import PerformanceTitle from './performance-title.jsx'
 import PerformanceDate from './performance-date.jsx'
 import PerformanceImage from './performance-image.jsx'
 
-class PerformanceFrame extends React.Component {
+export class PerformanceFrame extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
