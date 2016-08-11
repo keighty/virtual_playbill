@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import SearchBar from '../components/search-bar.jsx'
 import FilterablePerformances from '../components/filterable-performances'
 
-// TODO: get the user id
 export class FilterablePerformanceGrid extends React.Component {
   constructor(props) {
     super(props)
@@ -23,7 +22,6 @@ export class FilterablePerformanceGrid extends React.Component {
   componentWillUnmount () {
     this.serverRequest.abort()
   }
-
 
   render() {
     return (

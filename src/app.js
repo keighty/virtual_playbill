@@ -8,7 +8,6 @@ class App extends Component {
       <Router history={hashHistory}>
         <Route path='/' component={Container} >
           <IndexRoute component={FilterablePerformanceGrid} />
-          <Route path='/address' component={Address} />
           <Route path='*' component={NotFound} />
         </Route>
       </Router>
@@ -19,7 +18,7 @@ const NotFound = () => <h1>404.. This page is not found!</h1>
 
 const Nav = () => (
   <div>
-    <Link to='/'>Home</Link> | <Link to='/address'>Address</Link>
+    <Link to='/'>Home</Link>
   </div>
 )
 

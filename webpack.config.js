@@ -2,7 +2,7 @@ module.exports = {
   entry: './src/main.js',
   output: {
     path: './public/javascripts',
-    filename: 'bundled.js',
+    filename: 'bundle.js',
   },
   devServer: {
     inline: true,
