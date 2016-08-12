@@ -1,22 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import SearchBar from '../components/search-bar.jsx'
-import FilterablePerformances from '../containers/filterable-performances.jsx'
+import FilterablePerformances from '../components/filterable-performances'
 
-// TODO: get the user id
-class PerformanceGrid extends React.Component {
+export class FilterablePerformanceGrid extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      performances: []
+    }
+  }
+
+  componentDidMount () {
+    this.serverRequest = $.get('/user/1/performances', function (res) {
+      this.setState({
+        performances: res
+      })
+    }.bind(this))
+  }
+
+  componentWillUnmount () {
+    this.serverRequest.abort()
+  }
+
   render() {
     return (
       <div>
         <SearchBar />
-        <FilterablePerformances source='/user/1/performances' />
+        <FilterablePerformances performances={this.state.performances} />
       </div>
     )
 
   }
 }
 
-if (typeof window !== 'undefined') {
-  ReactDOM.render(<PerformanceGrid />,
-    document.getElementById('playbillIndex'))
-}
+export default FilterablePerformanceGrid
